@@ -23,10 +23,10 @@ app.logger = new rdclMiddleware.Logger();
 app.use(bodyParser.json());
 app.enable('trust proxy');
 
-app.server = http.createServer(app);
+app.server = http.Server(app);
 app.listen = app.server.listen.bind(app.server);
 
-app.io = io(http);
+app.io = io(app.server);
 app.mpd = require('../../lib/mpd');
 app.mpd.connect(app.config.mpd.port, app.config.mpd.host);
 

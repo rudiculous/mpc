@@ -7,12 +7,21 @@
     },
     "javascripts": {
         "main.js": [
-            "main.js",
-            "views/**/*.jsx"
+            "jquery.js",
+            "bootstrap.js",
+            "socket.io-1.1.0.js",
+            "models/**/*.js",
+            "controllers/**/*.js",
+            "views/**/*.jsx",
+            "main.js"
         ]
     },
     "stylesheets": {
         "main.css": [
+            "normalize.css",
+            "google-fonts.css",
+            "bootstrap.min.css",
+            "main.less"
         ]
     }
 }

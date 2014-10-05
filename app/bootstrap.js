@@ -37,3 +37,10 @@ if (app.config.middleware['errorhandler']) {
     app.logger.info('Using errorhandler middleware.');
     app.use(require('errorhandler')());
 }
+
+/**
+ * Route all remaining URI's to the index.
+ */
+app.get('*', function(req, res) {
+    res.render('index');
+});
