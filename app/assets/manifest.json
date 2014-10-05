@@ -1,0 +1,18 @@
+{
+    "options": {
+        "paths": [
+            "app/assets",
+            "vendor/assets"
+        ]
+    },
+    "javascripts": {
+        "main.js": [
+            "main.js",
+            "views/**/*.jsx"
+        ]
+    },
+    "stylesheets": {
+        "main.css": [
+        ]
+    }
+}

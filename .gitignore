@@ -1,0 +1,6 @@
+node_modules
+node_modules/*
+npm_debug.log
+var/log/*
+var/forever.pid
+!.keep
