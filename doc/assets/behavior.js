@@ -165,26 +165,37 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                   "type": "heading",
                   "data": {
                     "level": 2,
-                    "title": "Querying MPD&#39;s status",
-                    "slug": "querying-mpd39s-status"
+                    "title": "Commands",
+                    "slug": "commands"
                   },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Playback options",
-                    "slug": "playback-options"
-                  },
-                  "depth": 2
-                }, {
-                  "type": "heading",
-                  "data": {
-                    "level": 2,
-                    "title": "Controlling playback",
-                    "slug": "controlling-playback"
-                  },
-                  "depth": 2
+                  "depth": 2,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Querying MPD&#39;s status",
+                        "slug": "querying-mpd39s-status"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Playback options",
+                        "slug": "playback-options"
+                      },
+                      "depth": 3
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 3,
+                        "title": "Controlling playback",
+                        "slug": "controlling-playback"
+                      },
+                      "depth": 3
+                    }
+                  ]
                 }
               ]
             }, {
