@@ -103,6 +103,105 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
     }, {
       "type": "folder",
       "data": {
+        "path": "lib",
+        "title": "lib"
+      },
+      "depth": 1,
+      "children": [
+        {
+          "type": "file",
+          "data": {
+            "language": {
+              "nameMatchers": [".js"],
+              "pygmentsLexer": "javascript",
+              "multiLineComment": ["/*", "*", "*/"],
+              "singleLineComment": ["//"],
+              "ignorePrefix": "}",
+              "foldPrefix": "^",
+              "name": "JavaScript"
+            },
+            "sourcePath": "/home/rj/webapps/mpc/lib/mpd.js",
+            "projectPath": "lib/mpd.js",
+            "targetPath": "lib/mpd",
+            "pageTitle": "lib/mpd",
+            "title": "mpd"
+          },
+          "depth": 2,
+          "outline": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 1,
+                "title": "Initialization",
+                "slug": "initialization"
+              },
+              "depth": 1
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 1,
+                "title": "Public API",
+                "slug": "public-api"
+              },
+              "depth": 1,
+              "children": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Event handlers",
+                    "slug": "event-handlers"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Connection",
+                    "slug": "connection"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Querying MPD&#39;s status",
+                    "slug": "querying-mpd39s-status"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Playback options",
+                    "slug": "playback-options"
+                  },
+                  "depth": 2
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 2,
+                    "title": "Controlling playback",
+                    "slug": "controlling-playback"
+                  },
+                  "depth": 2
+                }
+              ]
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 1,
+                "title": "Private methods",
+                "slug": "private-methods"
+              },
+              "depth": 1
+            }
+          ]
+        }
+      ]
+    }, {
+      "type": "folder",
+      "data": {
         "path": "tasks",
         "title": "tasks"
       },
