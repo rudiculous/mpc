@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-(function() {
+(function($) {
     var Button = React.createClass({
         action: function(event) {
             event.preventDefault();
@@ -18,29 +18,15 @@
 
     var Controls = React.createClass({
         getInitialState: function() {
-            return this.getState();
+            return window.APP.mpd.getState();
         },
 
         componentDidMount: function() {
             var self = this;
 
-            window.APP.mpd.onceSocketReady(function(state) {
-                self.setState(self.getState(state));
+            $(window).on('mpd:stateUpdate', function() {
+                self.setState(window.APP.mpd.getState());
             });
-
-            window.APP.mpd.onUpdate(function(state) {
-                self.setState(self.getState(state));
-            });
-        },
-
-        getState: function(state) {
-            if (arguments.length === 0) {
-                state = window.APP.mpd.state;
-            }
-
-            return {
-                'state': state.state
-            };
         },
 
         render: function() {
@@ -65,30 +51,15 @@
 
     var Player = React.createClass({
         getInitialState: function() {
-            return this.getState();
+            return window.APP.mpd.getState();
         },
 
         componentDidMount: function() {
             var self = this;
 
-            window.APP.mpd.onceSocketReady(function(state) {
-                self.setState(self.getState(state));
+            $(window).on('mpd:stateUpdate', function() {
+                self.setState(window.APP.mpd.getState());
             });
-
-            window.APP.mpd.onUpdate(function(state) {
-                self.setState(self.getState(state));
-            });
-        },
-
-        getState: function(state) {
-            if (arguments.length === 0) {
-                state = window.APP.mpd.state;
-            }
-
-            return {
-                'Artist': window.APP.mpd.state.Artist,
-                'Title': window.APP.mpd.state.Title
-            };
         },
 
         render: function() {
@@ -107,4 +78,4 @@
         </div>,
         document.getElementById('controls')
     );
-}());
+}(jQuery));
