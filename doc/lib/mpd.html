@@ -174,17 +174,22 @@ are joined into a single string (space separated).</p>
 <p>Parameters:</p>
 <pre><code>* **...data must be a String.**</code></pre></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">write</span><span class="hljs-params">(data)</span> {</span>
     <span class="hljs-keyword">var</span> i;
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length &lt; <span class="hljs-number">1</span>) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>nothing to do here...</p></div></div><div class="code"><div class="wrapper">        <span class="hljs-keyword">return</span>;
+    }
+
     <span class="hljs-keyword">if</span> (client !== <span class="hljs-literal">null</span>) {
-        client.write(<span class="hljs-string">'noidle\n'</span>);
-        data = <span class="hljs-string">''</span>;
+        data = <span class="hljs-string">'noidle\n'</span>;
         <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">arguments</span>.length; i++) {
             <span class="hljs-keyword">if</span> (i &gt; <span class="hljs-number">0</span>) {
                 data += <span class="hljs-string">' '</span>;
             }
             data += <span class="hljs-built_in">arguments</span>[i].replace(<span class="hljs-string">'\n'</span>, <span class="hljs-string">' '</span>);
         }
-        client.write(data + <span class="hljs-string">'\n'</span>);
-        client.write(<span class="hljs-string">'idle\n'</span>);
+        data += <span class="hljs-string">'\n'</span>
+        data += <span class="hljs-string">'idle\n'</span>
+
+        client.write(data);
     }
 }</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Creates a toggle method.</p>
 <p>Parameters:</p>
