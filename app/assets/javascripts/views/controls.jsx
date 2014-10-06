@@ -12,7 +12,11 @@
         },
 
         render: function() {
-            return <a onClick={this.action}><span className={this.getClass()} /></a>
+            return (
+                <a className='player-control' onClick={this.action}>
+                    <span className={this.getClass()} />
+                </a>
+            );
         }
     });
 
