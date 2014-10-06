@@ -55,7 +55,9 @@ exports.removeListener = <span class="hljs-function"><span class="hljs-keyword">
     <span class="hljs-keyword">if</span> (client !== <span class="hljs-literal">null</span>) {
         client.end();
     }
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Alias for end. </p></div></div><div class="code"><div class="wrapper">exports.close = exports.end;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="commands">Commands</h2>
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Alias for end. </p></div></div><div class="code"><div class="wrapper">exports.close = exports.end;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Returns a deep copy of the current state. </p></div></div><div class="code"><div class="wrapper">exports.getState = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getState</span><span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-built_in">JSON</span>.stringify(state));
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="commands">Commands</h2>
 <p>The commands that follow are commands that are publicly available.
 That is, these commands are safe to be called by a client.</p></div></div><div class="code"><div class="wrapper">exports.commands = {};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h3 id="querying-mpd39s-status">Querying MPD&#39;s status</h3></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Reports the current status of the player and the volume level. </p></div></div><div class="code"><div class="wrapper">exports.commands.status = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">status</span><span class="hljs-params">()</span> {</span>
     write(<span class="hljs-string">'status'</span>);

@@ -1,70 +1,110 @@
 /** @jsx React.DOM */
 
-var Controls = React.createClass({
-    play: function(e) {
-        e.preventDefault();
-        window.APP.mpd('play');
-    },
+(function() {
+    var Button = React.createClass({
+        action: function(event) {
+            event.preventDefault();
+            window.APP.mpd(this.props.action);
+        },
 
-    stop: function(e) {
-        e.preventDefault();
-        window.APP.mpd('stop');
-    },
+        getClass: function() {
+            return 'glyphicon glyphicon-' + this.props.icon;
+        },
 
-    pause: function(e) {
-        e.preventDefault();
-        window.APP.mpd('pause');
-    },
+        render: function() {
+            return <a onClick={this.action}><span className={this.getClass()} /></a>
+        }
+    });
 
-    next: function(e) {
-        e.preventDefault();
-        window.APP.mpd('next');
-    },
+    var Controls = React.createClass({
+        getInitialState: function() {
+            return this.getState();
+        },
 
-    previous: function(e) {
-        e.preventDefault();
-        window.APP.mpd('previous');
-    },
+        componentDidMount: function() {
+            var self = this;
 
-    render: function() {
-        return (
-            <div className="controls-buttons">
-                <a onClick={this.previous}><span className="glyphicon glyphicon-fast-backward" /></a>
-                <a onClick={this.play}><span className="glyphicon glyphicon-play" /></a>
-                <a onClick={this.stop}><span className="glyphicon glyphicon-stop" /></a>
-                <a onClick={this.pause}><span className="glyphicon glyphicon-pause" /></a>
-                <a onClick={this.next}><span className="glyphicon glyphicon-fast-forward" /></a>
-            </div>
-        );
-    }
-});
+            window.APP.mpd.onceSocketReady(function(state) {
+                self.setState(self.getState(state));
+            });
 
-var Player = React.createClass({
-    getInitialState: function() {
-        var self = this;
+            window.APP.mpd.onUpdate(function(state) {
+                self.setState(self.getState(state));
+            });
+        },
 
-        window.APP.mpd.onUpdate(function(state) {
-            self.setState(state);
-        });
+        getState: function(state) {
+            if (arguments.length === 0) {
+                state = window.APP.mpd.state;
+            }
 
-        window.APP.mpd('status');
+            return {
+                'state': state.state
+            };
+        },
 
-        return {};
-    },
+        render: function() {
+            var playpause;
+            if (this.state.state !== 'play') {
+                playpause = <Button action='play'  icon='play'  />;
+            }
+            else {
+                playpause = <Button action='pause' icon='pause' />;
+            }
 
-    render: function() {
-        return (
-            <div className="controls-player">
-                {this.state.Artist} - {this.state.Title}
-            </div>
-        );
-    }
-});
+            return (
+                <div className="controls-buttons">
+                    <Button action='previous' icon='fast-backward' />
+                    {playpause}
+                    <Button action='stop'     icon='stop'          />
+                    <Button action='next'     icon='fast-forward'  />
+                </div>
+            );
+        }
+    });
 
-React.renderComponent(
-    <div className="controls-container">
-        <Controls />
-        <Player />
-    </div>,
-    document.getElementById('controls')
-);
+    var Player = React.createClass({
+        getInitialState: function() {
+            return this.getState();
+        },
+
+        componentDidMount: function() {
+            var self = this;
+
+            window.APP.mpd.onceSocketReady(function(state) {
+                self.setState(self.getState(state));
+            });
+
+            window.APP.mpd.onUpdate(function(state) {
+                self.setState(self.getState(state));
+            });
+        },
+
+        getState: function(state) {
+            if (arguments.length === 0) {
+                state = window.APP.mpd.state;
+            }
+
+            return {
+                'Artist': window.APP.mpd.state.Artist,
+                'Title': window.APP.mpd.state.Title
+            };
+        },
+
+        render: function() {
+            return (
+                <div className="controls-player">
+                    {this.state.Artist} - {this.state.Title}
+                </div>
+            );
+        }
+    });
+
+    React.renderComponent(
+        <div className="controls-container">
+            <Controls />
+            <Player />
+        </div>,
+        document.getElementById('controls')
+    );
+}());

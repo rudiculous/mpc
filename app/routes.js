@@ -28,4 +28,6 @@ app.io.on('connection', function connection(socket) {
         // cleanup
         app.mpd.removeListener('updated', updateListener);
     });
+
+    socket.emit('socket:ready', app.mpd.getState());
 });
