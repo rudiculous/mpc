@@ -29,6 +29,7 @@ app.listen = app.server.listen.bind(app.server);
 app.io = io(app.server);
 app.mpd = require('../../lib/mpd');
 app.mpd.connect(app.config.mpd.port, app.config.mpd.host);
+// @todo If the connection gets lost, reestablish the connection.
 
 
 /** ## Template engine */

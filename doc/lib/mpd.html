@@ -5,17 +5,39 @@
 <span class="hljs-keyword">var</span> EventEmitter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>).EventEmitter;
 
 <span class="hljs-keyword">var</span> client = <span class="hljs-literal">null</span>;
-<span class="hljs-keyword">var</span> state = {};
-<span class="hljs-keyword">var</span> events = <span class="hljs-keyword">new</span> EventEmitter();</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="public-api">Public API</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="event-handlers">Event handlers</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">exports.on = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">on</span><span class="hljs-params">()</span> {</span>
-    events.on.apply(events, <span class="hljs-built_in">arguments</span>);
+<span class="hljs-keyword">var</span> queue = [];
+<span class="hljs-keyword">var</span> dataQueue = [];
+<span class="hljs-keyword">var</span> mpdStatus = <span class="hljs-literal">null</span>;
+<span class="hljs-keyword">var</span> ev = <span class="hljs-keyword">new</span> EventEmitter();
+
+<span class="hljs-keyword">var</span> commandList = [</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="http://www.musicpd.org/doc/protocol/command_reference.html">Querying MPD&#39;s status.</a></p></div></div><div class="code"><div class="wrapper">    <span class="hljs-string">'currentsong'</span>, <span class="hljs-string">'status'</span>, <span class="hljs-string">'stats'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="http://www.musicpd.org/doc/protocol/playback_option_commands.html">Playback options.</a></p></div></div><div class="code"><div class="wrapper">    <span class="hljs-string">'consume'</span>, <span class="hljs-string">'crossfade'</span>, <span class="hljs-string">'mixrampdb'</span>, <span class="hljs-string">'mixrampdelay'</span>, <span class="hljs-string">'random'</span>,
+    <span class="hljs-string">'repeat'</span>, <span class="hljs-string">'setvol'</span>, <span class="hljs-string">'single'</span>, <span class="hljs-string">'replay_gain_mode'</span>,
+    <span class="hljs-string">'replay_gain_status'</span>, <span class="hljs-string">'volume'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="http://www.musicpd.org/doc/protocol/playback_commands.html">Controlling playback.</a></p></div></div><div class="code"><div class="wrapper">    <span class="hljs-string">'next'</span>, <span class="hljs-string">'pause'</span>, <span class="hljs-string">'play'</span>, <span class="hljs-string">'playid'</span>, <span class="hljs-string">'previous'</span>, <span class="hljs-string">'seek'</span>, <span class="hljs-string">'seekid'</span>,
+    <span class="hljs-string">'seekcur'</span>, <span class="hljs-string">'stop'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="http://www.musicpd.org/doc/protocol/queue.html">The current playlist.</a></p></div></div><div class="code"><div class="wrapper">    <span class="hljs-string">'add'</span>, <span class="hljs-string">'addid'</span>, <span class="hljs-string">'clear'</span>, <span class="hljs-string">'delete'</span>, <span class="hljs-string">'deleteid'</span>, <span class="hljs-string">'move'</span>, <span class="hljs-string">'moveid'</span>,
+    <span class="hljs-string">'playlist'</span>, <span class="hljs-string">'playlistfind'</span>, <span class="hljs-string">'playlistid'</span>, <span class="hljs-string">'playlistinfo'</span>,
+    <span class="hljs-string">'playlistsearch'</span>, <span class="hljs-string">'plchanges'</span>, <span class="hljs-string">'plchangesposid'</span>, <span class="hljs-string">'prio'</span>, <span class="hljs-string">'prioid'</span>,
+    <span class="hljs-string">'rangeid'</span>, <span class="hljs-string">'shuffle'</span>, <span class="hljs-string">'swap'</span>, <span class="hljs-string">'swapid'</span>, <span class="hljs-string">'addtagid'</span>, <span class="hljs-string">'cleartagid'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="http://www.musicpd.org/doc/protocol/playlist_files.html">Stored playlists.</a></p></div></div><div class="code"><div class="wrapper">    <span class="hljs-string">'listplaylist'</span>, <span class="hljs-string">'listplaylistinfo'</span>, <span class="hljs-string">'listplaylists'</span>, <span class="hljs-string">'load'</span>,
+    <span class="hljs-string">'playlistadd'</span>, <span class="hljs-string">'playlistclear'</span>, <span class="hljs-string">'playlistdelete'</span>, <span class="hljs-string">'playlistmove'</span>,
+    <span class="hljs-string">'rename'</span>, <span class="hljs-string">'rm'</span>, <span class="hljs-string">'save'</span>,</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p><a href="http://www.musicpd.org/doc/protocol/database.html">The music database.</a></p></div></div><div class="code"><div class="wrapper">    <span class="hljs-string">'count'</span>, <span class="hljs-string">'find'</span>, <span class="hljs-string">'findadd'</span>, <span class="hljs-string">'list'</span>, <span class="hljs-string">'listall'</span>, <span class="hljs-string">'listallinfo'</span>,
+    <span class="hljs-string">'listfiles'</span>, <span class="hljs-string">'lsinfo'</span>, <span class="hljs-string">'readcomments'</span>, <span class="hljs-string">'search'</span>, <span class="hljs-string">'searchadd'</span>,
+    <span class="hljs-string">'searchaddpl'</span>, <span class="hljs-string">'update'</span>, <span class="hljs-string">'rescan'</span>,
+];
+
+<span class="hljs-keyword">var</span> validCommands = {};
+commandList.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(command)</span> {</span>
+    validCommands[command] = <span class="hljs-literal">true</span>;
+});</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="public-api">Public API</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Returns a deep copy of the command list.</p></div></div><div class="code"><div class="wrapper">exports.getCommandList = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getCommandList</span><span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-built_in">JSON</span>.stringify(commandList));
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="event-handlers">Event handlers</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">exports.on = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">on</span><span class="hljs-params">()</span> {</span>
+    ev.on.apply(ev, <span class="hljs-built_in">arguments</span>);
 };
 
 exports.once = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">once</span><span class="hljs-params">()</span> {</span>
-    events.once.apply(events, <span class="hljs-built_in">arguments</span>);
+    ev.once.apply(ev, <span class="hljs-built_in">arguments</span>);
 };
 
 exports.removeListener = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeListener</span><span class="hljs-params">()</span> {</span>
-    events.removeListener.apply(events, <span class="hljs-built_in">arguments</span>);
+    ev.removeListener.apply(ev, <span class="hljs-built_in">arguments</span>);
 };</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="connection">Connection</h2></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Connects to MPD.</p>
 <p>Parameters:</p>
 <ul>
@@ -28,196 +50,163 @@ exports.removeListener = <span class="hljs-function"><span class="hljs-keyword">
     <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length &lt; <span class="hljs-number">2</span>) host = MPD_HOST;
 
     <span class="hljs-keyword">if</span> (client === <span class="hljs-literal">null</span>) {
-        state = {}; <span class="hljs-comment">// reset state</span>
+        queue.length = <span class="hljs-number">0</span>; <span class="hljs-comment">// clear queue</span>
+        dataQueue.length = <span class="hljs-number">0</span>; <span class="hljs-comment">// clear data queue</span>
+        mpdStatus = <span class="hljs-literal">null</span>;
+
         client = net.connect({
             <span class="hljs-string">'port'</span>: port,
             <span class="hljs-string">'host'</span>: host,
         }, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onConnect</span><span class="hljs-params">()</span> {</span>
-            updateState();
+            ev.once(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The first data coming back is the <code>OK MPD version</code> line.</p></div></div><div class="code"><div class="wrapper">                mpdStatus = dataQueue.shift();
+                client.write(<span class="hljs-string">'idle\n'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                    ev.emit(<span class="hljs-string">'connection:ready'</span>);
+                });
+            });
         });
 
-        events.once(<span class="hljs-string">'updated'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onceUpdated</span><span class="hljs-params">()</span> {</span>
-            events.emit(<span class="hljs-string">'connection:ready'</span>);
+        client.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onData</span><span class="hljs-params">(data)</span> {</span>
+            <span class="hljs-keyword">var</span> matched;
+
+            data = data.toString(<span class="hljs-string">'utf8'</span>);
+            <span class="hljs-comment">//process.stdout.write(data);</span>
+
+            matched = data.match(<span class="hljs-regexp">/^changed: ([^\r\n]*)/</span>);
+
+            <span class="hljs-keyword">if</span> (matched) {
+                ev.emit(<span class="hljs-string">'changed'</span>, matched[<span class="hljs-number">1</span>]);
+                client.write(<span class="hljs-string">'idle\n'</span>);
+            }
+            <span class="hljs-keyword">else</span> {
+                dataQueue.push(data);
+                ev.emit(<span class="hljs-string">'data'</span>);
+            }
         });
 
-        client.on(<span class="hljs-string">'data'</span>, dataHandler);
-        events.on(<span class="hljs-string">'changed'</span>, changedHandler);
+        ev.once(<span class="hljs-string">'queue:updated'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            shift();
+        });
 
         client.on(<span class="hljs-string">'end'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onEnd</span><span class="hljs-params">()</span> {</span>
             client = <span class="hljs-literal">null</span>;
-            events.emit(<span class="hljs-string">'connection:closed'</span>);
+            queue.length = <span class="hljs-number">0</span>;
+            dataQueue.length = <span class="hljs-number">0</span>;
+            ev.emit(<span class="hljs-string">'connection:closed'</span>);
         });
     }
     <span class="hljs-keyword">else</span> {
-        events.emit(<span class="hljs-string">'connection:error'</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Connection already open.'</span>));
+        ev.emit(<span class="hljs-string">'connection:error'</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Connection already open.'</span>));
     }
 };</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Closes the connection to MPD. </p></div></div><div class="code"><div class="wrapper">exports.end = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">end</span><span class="hljs-params">()</span> {</span>
     <span class="hljs-keyword">if</span> (client !== <span class="hljs-literal">null</span>) {
         client.end();
     }
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Alias for end. </p></div></div><div class="code"><div class="wrapper">exports.close = exports.end;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Returns a deep copy of the current state. </p></div></div><div class="code"><div class="wrapper">exports.getState = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getState</span><span class="hljs-params">()</span> {</span>
-    <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-built_in">JSON</span>.stringify(state));
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="commands">Commands</h2>
-<p>The commands that follow are commands that are publicly available.
-That is, these commands are safe to be called by a client.</p></div></div><div class="code"><div class="wrapper">exports.commands = {};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h3 id="querying-mpd39s-status">Querying MPD&#39;s status</h3></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Reports the current status of the player and the volume level. </p></div></div><div class="code"><div class="wrapper">exports.commands.status = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">status</span><span class="hljs-params">()</span> {</span>
-    write(<span class="hljs-string">'status'</span>);
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Displayes statistics. </p></div></div><div class="code"><div class="wrapper">exports.commands.stats = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">stats</span><span class="hljs-params">()</span> {</span>
-    write(<span class="hljs-string">'stats'</span>);
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h3 id="playback-options">Playback options</h3></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Toggles <code>consume</code>. </p></div></div><div class="code"><div class="wrapper">exports.commands.consume = toggleFactory(<span class="hljs-string">'consume'</span>);</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Sets crossfade.</p>
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Alias for end. </p></div></div><div class="code"><div class="wrapper">exports.close = exports.end;</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Pushes a command onto the queue.</p>
 <p>Parameters:</p>
 <ul>
-<li><strong>seconds must be a Number.</strong></li>
-</ul></div></div><div class="code"><div class="wrapper">exports.commands.crossfade = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">crossfade</span><span class="hljs-params">(seconds)</span> {</span>
-    write(<span class="hljs-string">'crossfade'</span>, seconds);
-};</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>TODO: mixrampdb </p>
-<p>TODO: mixrampdelay </p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Toggles <code>random</code>.</p></div></div><div class="code"><div class="wrapper">exports.commands.random = toggleFactory(<span class="hljs-string">'random'</span>);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Toggles <code>repeat</code>. </p></div></div><div class="code"><div class="wrapper">exports.commands.repeat = toggleFactory(<span class="hljs-string">'repeat'</span>);</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Sets the volume.</p>
-<p>Parameters:</p>
-<ul>
-<li><strong>vol must be a Number.</strong><br/>(A level between 0-100.)</li>
-</ul></div></div><div class="code"><div class="wrapper">exports.commands.volume = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">volume</span><span class="hljs-params">(vol)</span> {</span>
-    write(<span class="hljs-string">'setvol'</span>, vol);
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Toggles <code>single</code>. </p></div></div><div class="code"><div class="wrapper">exports.commands.single = toggleFactory(<span class="hljs-string">'single'</span>);</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Sets the replay gain mode. One of <code>off</code>, <code>track</code>, <code>album</code>, <code>auto</code>.</p>
-<p>Parameters:</p>
-<ul>
-<li><strong>mode must be a String.</strong></li>
-</ul></div></div><div class="code"><div class="wrapper">exports.commands.replayGainMode = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">replayGainMode</span><span class="hljs-params">(mode)</span> {</span>
-    write(<span class="hljs-string">'replay_gain_mode'</span>, mode);
-};</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>TODO: replay_gain_status </p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h3 id="controlling-playback">Controlling playback</h3></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Plays the next song in the playlist. </p></div></div><div class="code"><div class="wrapper">exports.commands.next = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">next</span><span class="hljs-params">()</span> {</span>
-    write(<span class="hljs-string">'next'</span>);
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Toggles playback. </p></div></div><div class="code"><div class="wrapper">exports.commands.pause = toggleFactory(<span class="hljs-string">'state'</span>, <span class="hljs-literal">true</span>, <span class="hljs-string">'pause'</span>, <span class="hljs-string">'pause'</span>);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Alias for pause. </p></div></div><div class="code"><div class="wrapper">exports.commands.toggle = exports.commands.pause;</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Begins paying the playlist at song number <code>songpos</code>.</p>
-<p>Parameters:</p>
-<ul>
-<li><strong>songpos is optional and must be a Number.</strong></li>
-</ul></div></div><div class="code"><div class="wrapper">exports.commands.play = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">play</span><span class="hljs-params">(songpos)</span> {</span>
-    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length === <span class="hljs-number">0</span>) {
-        write(<span class="hljs-string">'play'</span>);
-    }
-    <span class="hljs-keyword">else</span> {
-        write(<span class="hljs-string">'play'</span>, songpos);
-    }
-};</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>TODO: playid [SONGID] </p></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Plays the previous song in the playlist. </p></div></div><div class="code"><div class="wrapper">exports.commands.previous = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">previous</span><span class="hljs-params">()</span> {</span>
-    write(<span class="hljs-string">'previous'</span>);
-};</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Seeks to the position <code>time</code> of entry <code>songpos</code>.</p>
-<p>Parameters:</p>
-<ul>
-<li><p><strong>songpos must be a Number.</strong></p>
+<li><p><strong>data must be any number of Strings.</strong></p>
 </li>
-<li><p><strong>time must be a Number.</strong><br/>(In seconds, fractions allowed.)</p>
+<li><p><strong>callback must be a Function.</strong></p>
 </li>
-</ul></div></div><div class="code"><div class="wrapper">exports.commands.seek = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">seek</span><span class="hljs-params">(songpos, time)</span> {</span>
-    write(<span class="hljs-string">'seek'</span>, songpos, time);
-};</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>TODO: seekid {SONGID} {TIME} </p></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Seeks to position <code>time</code> within the current song.</p>
-<p>If <code>time</code> is prefixed by <code>+</code> or <code>-</code>, then the time is relative to the
-current playing position.</p>
-<p>Parameters:</p>
-<ul>
-<li><strong>time can be a Number or a String.</strong><br/>(In seconds, fractions allowed.)</li>
-</ul></div></div><div class="code"><div class="wrapper">exports.commands.seekcur = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">seekcur</span><span class="hljs-params">(time)</span> {</span>
-    write(<span class="hljs-string">'seekcur'</span>, time);
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Stops playing. </p></div></div><div class="code"><div class="wrapper">exports.commands.stop = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">stop</span><span class="hljs-params">()</span> {</span>
-    write(<span class="hljs-string">'stop'</span>);
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="private-methods">Private methods</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Initializes the internal state.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">updateState</span><span class="hljs-params">()</span> {</span>
-    <span class="hljs-keyword">if</span> (client != <span class="hljs-literal">null</span>) {
-        client.write([
-            <span class="hljs-string">'noidle'</span>,
-            <span class="hljs-string">'command_list_begin'</span>,
-            <span class="hljs-string">'currentsong'</span>,
-            <span class="hljs-string">'status'</span>,
-            <span class="hljs-string">'stats'</span>,
-            <span class="hljs-string">'command_list_end'</span>,
-            <span class="hljs-string">'idle'</span>,
-        ].join(<span class="hljs-string">'\n'</span>) + <span class="hljs-string">'\n'</span>);
+</ul></div></div><div class="code"><div class="wrapper">exports.push = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">push</span><span class="hljs-params">(data, callback)</span> {</span>
+    <span class="hljs-keyword">var</span> last = <span class="hljs-built_in">arguments</span>.length - <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">var</span> command;
+    <span class="hljs-keyword">var</span> args;
+    <span class="hljs-keyword">var</span> slice = <span class="hljs-built_in">Array</span>.prototype.slice;
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length === <span class="hljs-number">0</span>
+            || <span class="hljs-keyword">typeof</span>(<span class="hljs-built_in">arguments</span>[last]) !== <span class="hljs-string">'function'</span>) {
+
+        <span class="hljs-keyword">return</span>; <span class="hljs-comment">// noop</span>
     }
-}</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Handles the incoming data from the client.</p>
-<p>Parameters:</p>
-<ul>
-<li><strong>data must be a Buffer.</strong></li>
-</ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">dataHandler</span><span class="hljs-params">(data)</span> {</span>
-    <span class="hljs-keyword">var</span> updated = <span class="hljs-literal">false</span>,
-        i, key, value;
 
-    <span class="hljs-comment">//console.info('received', {data:data.toString()});</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>TODO: Do we need toString?</p></div></div><div class="code"><div class="wrapper">    data.toString().split(<span class="hljs-string">'\n'</span>).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(line)</span> {</span>
-        <span class="hljs-keyword">if</span> (line === <span class="hljs-string">'OK'</span> || line === <span class="hljs-string">''</span> || line === <span class="hljs-string">'list_OK'</span>) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>For now we ignore these lines.</p></div></div><div class="code"><div class="wrapper">        }
-        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (line.match(<span class="hljs-regexp">/^changed: /</span>)) {
-            value = line.substring(<span class="hljs-string">'changed: '</span>.length);
-            events.emit(<span class="hljs-string">'changed'</span>, value);
-        }
-        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (line.match(<span class="hljs-regexp">/: /</span>)) {
-            i = line.indexOf(<span class="hljs-string">': '</span>);
-            key = line.substring(<span class="hljs-number">0</span>, i);
-            value = line.substring(i + <span class="hljs-number">2</span>);
+    callback = <span class="hljs-built_in">arguments</span>[last];
 
-            state[key] = value;
-            updated = <span class="hljs-literal">true</span>;
-        }
-        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (line.match(<span class="hljs-regexp">/^OK MPD/</span>)) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>mpd version</p></div></div><div class="code"><div class="wrapper">        }
-        <span class="hljs-keyword">else</span> {
-            console.error(<span class="hljs-string">'unknown line,'</span>, {line:line});
-        }
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length &lt; <span class="hljs-number">2</span>) {
+        <span class="hljs-keyword">return</span> callback(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Invalid number of arguments.'</span>));
+    }
+
+    command = <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>];
+    args = slice.call(<span class="hljs-built_in">arguments</span>, <span class="hljs-number">1</span>, last).join(<span class="hljs-string">' '</span>).replace(<span class="hljs-string">'\n'</span>, <span class="hljs-string">''</span>);
+    <span class="hljs-keyword">if</span> (args !== <span class="hljs-string">''</span>) {
+        args = <span class="hljs-string">' '</span> + args;
+    }
+
+    <span class="hljs-keyword">if</span> (!validCommands[command]) {
+        <span class="hljs-keyword">return</span> callback(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Invalid command.'</span>));
+    }
+
+    queue.push({
+        <span class="hljs-string">'command'</span>: command,
+        <span class="hljs-string">'args'</span>: args,
+        <span class="hljs-string">'callback'</span>: callback,
     });
 
-    <span class="hljs-keyword">if</span> (updated) {
-        events.emit(<span class="hljs-string">'updated'</span>, state);
-    }
-}</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Handles <code>changed</code> events.</p>
-<p>TODO: </p>
+    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        ev.emit(<span class="hljs-string">'queue:updated'</span>);
+    }, <span class="hljs-number">0</span>);
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="private-methods">Private methods</h1></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Shifts a command from the queue and executes it.</p>
+<p>If, after finishing the command, there are more commands on the
+queue, these commands are also executed. When there are no commands
+left, the <code>idle</code> command is sent.</p>
 <p>Parameters:</p>
 <ul>
-<li><strong>what must be a String.</strong></li>
-</ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">changedHandler</span><span class="hljs-params">(what)</span> {</span>
-    updateState();
-}</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Writes sanitized data to the MPD connection.</p>
-<p>First the command <code>noidle</code> is sent.</p>
-<p>Newlines are replaced by spaces and all arguments to this function
-are joined into a single string (space separated).</p>
-<p>Finally the command <code>idle</code> is sent.</p>
-<p>Parameters:</p>
-<pre><code>* **...data must be a String.**</code></pre></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">write</span><span class="hljs-params">(data)</span> {</span>
-    <span class="hljs-keyword">var</span> i;
-
-    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length &lt; <span class="hljs-number">1</span>) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>nothing to do here...</p></div></div><div class="code"><div class="wrapper">        <span class="hljs-keyword">return</span>;
+<li><strong>skipNoIdle is optional, must be a Boolean, and has a default value of false.</strong></li>
+</ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">shift</span><span class="hljs-params">(skipNoIdle)</span> {</span>
+    <span class="hljs-keyword">if</span> (client === <span class="hljs-literal">null</span>) {
+        <span class="hljs-keyword">return</span>;
     }
 
-    <span class="hljs-keyword">if</span> (client !== <span class="hljs-literal">null</span>) {
-        data = <span class="hljs-string">'noidle\n'</span>;
-        <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">arguments</span>.length; i++) {
-            <span class="hljs-keyword">if</span> (i &gt; <span class="hljs-number">0</span>) {
-                data += <span class="hljs-string">' '</span>;
-            }
-            data += <span class="hljs-built_in">arguments</span>[i].replace(<span class="hljs-string">'\n'</span>, <span class="hljs-string">' '</span>);
-        }
-        data += <span class="hljs-string">'\n'</span>
-        data += <span class="hljs-string">'idle\n'</span>
+    <span class="hljs-keyword">var</span> item = queue.shift();
+    <span class="hljs-keyword">var</span> command = item.command;
+    <span class="hljs-keyword">var</span> args = item.args;
+    <span class="hljs-keyword">var</span> callback = item.callback;
 
-        client.write(data);
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">act</span><span class="hljs-params">()</span> {</span>
+        client.write(command + args + <span class="hljs-string">'\n'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            getData(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                callback.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+                
+                <span class="hljs-keyword">if</span> (queue.length) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the queue is not empty, don&#39;t go idle.</p></div></div><div class="code"><div class="wrapper">                    shift(<span class="hljs-literal">true</span>);
+                }
+                <span class="hljs-keyword">else</span> {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Nothing left to do, wait for more input.</p></div></div><div class="code"><div class="wrapper">                    client.write(<span class="hljs-string">'idle\n'</span>);
+                    ev.once(<span class="hljs-string">'queue:updated'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                        shift();
+                    });
+                }
+            });
+        });
     }
-}</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Creates a toggle method.</p>
+
+    <span class="hljs-keyword">if</span> (skipNoIdle) {
+        act();
+    }
+    <span class="hljs-keyword">else</span> {
+        client.write(<span class="hljs-string">'noidle\n'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            getData(act);
+        });
+    }
+}</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Waits for a response from MPD.</p>
 <p>Parameters:</p>
 <ul>
-<li><p><strong>key must be a String.</strong><br/>(The name of the key within the state.)</p>
-</li>
-<li><p><strong>invert is optional, must be a Boolean, and has a default value of false.</strong><br/>(Invert the logic for computing the current state.)</p>
-</li>
-<li><p><strong>command is optional and must be a String.</strong><br/>(The command to send to MPD. Defaults to <code>key</code>.)</p>
-</li>
-<li><p><strong>trueVal is optional, can be of any type, and has a default value of 1.</strong><br/>(The value to consider as <code>true</code>.)</p>
-</li>
-</ul>
-<p><strong>Returns a Function</strong></p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">toggleFactory</span><span class="hljs-params">(key, invert, command, trueVal)</span> {</span>
-    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length &lt; <span class="hljs-number">3</span>) {
-        command = key;
-    }
-    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length &lt; <span class="hljs-number">4</span>) {
-        trueVal = <span class="hljs-string">'1'</span>;
-    }
+<li><strong>callback must be a Function.</strong></li>
+</ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getData</span><span class="hljs-params">(callback)</span> {</span>
+    <span class="hljs-keyword">var</span> data;
+    process();</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Gets data from the data queue, or waits until something is
+written.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">process</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">if</span> (dataQueue.length) {
+            data = dataQueue.shift();
 
-    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">toggle</span><span class="hljs-params">(value)</span> {</span>
-        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length === <span class="hljs-number">0</span>) {
-            value = state[key] === trueVal;
-            <span class="hljs-keyword">if</span> (invert) {
-                value = !value;
+            <span class="hljs-keyword">if</span> (data.match(<span class="hljs-regexp">/^ACK/</span>)) {
+                callback(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(data));
             }
+            <span class="hljs-keyword">else</span> {
+                callback(<span class="hljs-literal">null</span>, data);
+            }
+
+            <span class="hljs-keyword">return</span>;
         }
-        write(command, value ? <span class="hljs-string">'1'</span> : <span class="hljs-string">'0'</span>);
-    };
+
+        ev.once(<span class="hljs-string">'data'</span>, process);
+    }
 }</div></div></div></div></body></html>

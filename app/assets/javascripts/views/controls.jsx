@@ -4,7 +4,11 @@
     var Button = React.createClass({
         action: function(event) {
             event.preventDefault();
-            window.APP.mpd(this.props.action);
+            window.APP.mpd(this.props.action, function(err) {
+                if (err) {
+                    console.error(err);
+                }
+            });
         },
 
         getClass: function() {
@@ -22,14 +26,41 @@
 
     var Controls = React.createClass({
         getInitialState: function() {
-            return window.APP.mpd.getState();
+            this.fetchAndSetState();
+            return {};
         },
 
         componentDidMount: function() {
             var self = this;
 
-            $(window).on('mpd:stateUpdate', function() {
-                self.setState(window.APP.mpd.getState());
+            $(window).on('mpd:changed:player', function() {
+                self.fetchAndSetState();
+            });
+        },
+
+        fetchAndSetState: function() {
+            var self = this;
+
+            window.APP.mpd('status', function(err, status) {
+                var data = {},
+                    lines, i, line, index, key, val;
+
+                if (err) {
+                    return console.error(err);
+                }
+
+                lines = status.split('\n');
+                for (i = 0; i < lines.length; i++) {
+                    line = lines[i];
+                    index = line.indexOf(': ');
+                    if (index > -1) {
+                        key = line.substring(0, index);
+                        val = line.substring(index + 2);
+                        data[key] = val;
+                    }
+                }
+
+                self.setState(data);
             });
         },
 
@@ -55,14 +86,41 @@
 
     var Player = React.createClass({
         getInitialState: function() {
-            return window.APP.mpd.getState();
+            this.fetchAndSetState();
+            return {};
         },
 
         componentDidMount: function() {
             var self = this;
 
-            $(window).on('mpd:stateUpdate', function() {
-                self.setState(window.APP.mpd.getState());
+            $(window).on('mpd:changed:player', function() {
+                self.fetchAndSetState();
+            });
+        },
+
+        fetchAndSetState: function() {
+            var self = this;
+
+            window.APP.mpd('currentsong', function(err, currentsong) {
+                var data = {},
+                    lines, i, line, index, key, val;
+
+                if (err) {
+                    return console.error(err);
+                }
+
+                lines = currentsong.split('\n');
+                for (i = 0; i < lines.length; i++) {
+                    line = lines[i];
+                    index = line.indexOf(': ');
+                    if (index > -1) {
+                        key = line.substring(0, index);
+                        val = line.substring(index + 2);
+                        data[key] = val;
+                    }
+                }
+
+                self.setState(data);
             });
         },
 

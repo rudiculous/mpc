@@ -1,32 +1,36 @@
 (function(io, $) {
     "use strict";
 
-    window.APP = {};
-
     var socket = io();
 
-    // The global state.
-    var state = {};
+    window.APP = {};
 
-    window.APP.mpd = function(command, args) {
+    window.APP.mpd = function(command, args, callback) {
+        var last = arguments.length - 1;
+
+        if (arguments.length < 2) {
+            throw new Error('mpd() called with too few arguments.');
+        }
+
+        if (typeof(arguments[last]) !== 'function') {
+            throw new Error('Last argument to mpd() should be a callback.');
+        }
+
+        command = arguments[0];
+        args = Array.prototype.slice.call(arguments, 1, last);
+        callback = arguments[last];
+
         socket.emit('mpd:command', {
             'command': command,
-            'args': args || []
-        });
+            'args': args
+        }, callback);
     };
 
-    // Returns a deep copy of the global state.
-    window.APP.mpd.getState = function() {
-        return JSON.parse(JSON.stringify(state));
-    };
-
-    socket.once('socket:ready', function(initialState) {
-        state = initialState;
-        $(window).trigger('mpd:stateUpdate');
+    socket.on('mpd:changed', function(message) {
+        $(window).trigger('mpd:changed', message);
+        $(window).trigger('mpd:changed:' + message);
     });
 
-    socket.on('mpd:updated', function(newState) {
-        state = newState;
-        $(window).trigger('mpd:stateUpdate');
+    socket.once('socket:ready', function() {
     });
 }(io, jQuery));
