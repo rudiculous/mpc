@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-(function($) {
+(function() {
     "use strict";
 
     var Browser = React.createClass({
@@ -15,4 +15,4 @@
         <Browser />,
         document.getElementById('main')
     );
-}(jQuery));
+}());

@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-(function($) {
+(function() {
     "use strict";
 
     var components = {};
@@ -38,9 +38,9 @@
         componentDidMount: function() {
             var self = this;
 
-            $(window).on('mpd:changed:player', function() {
+            document.addEventListener('mpd:changed:player', function() {
                 self.fetchAndSetState();
-            });
+            }, false);
         },
 
         fetchAndSetState: function() {
@@ -98,9 +98,9 @@
         componentDidMount: function() {
             var self = this;
 
-            $(window).on('mpd:changed:player', function() {
+            document.addEventListener('mpd:changed:player', function() {
                 self.fetchAndSetState();
-            });
+            }, false);
         },
 
         fetchAndSetState: function() {
@@ -145,4 +145,4 @@
         </div>,
         document.getElementById('controls')
     );
-}(jQuery));
+}());

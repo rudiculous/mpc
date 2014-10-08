@@ -12,7 +12,7 @@
             "socket.io-1.1.0.js",
             "react-0.11.2.js",
 
-            "main.js",
+            "main.coffee",
             "views/*.jsx"
         ]
     },
