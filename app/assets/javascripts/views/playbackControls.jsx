@@ -1,10 +1,15 @@
 /** @jsx React.DOM */
 
 (function($) {
-    var Button = React.createClass({
+    "use strict";
+
+    var components = {};
+    window.MPD_APP.views.playbackControls = components;
+
+    components.PlaybackButton = React.createClass({
         action: function(event) {
             event.preventDefault();
-            window.APP.mpd(this.props.action, function(err) {
+            window.MPD_APP.mpd(this.props.action, function(err) {
                 if (err) {
                     console.error(err);
                 }
@@ -24,7 +29,7 @@
         }
     });
 
-    var Controls = React.createClass({
+    components.Controls = React.createClass({
         getInitialState: function() {
             this.fetchAndSetState();
             return {};
@@ -41,7 +46,7 @@
         fetchAndSetState: function() {
             var self = this;
 
-            window.APP.mpd('status', function(err, status) {
+            window.MPD_APP.mpd('status', function(err, status) {
                 var data = {},
                     lines, i, line, index, key, val;
 
@@ -67,24 +72,24 @@
         render: function() {
             var playpause;
             if (this.state.state !== 'play') {
-                playpause = <Button action='play'  icon='play'  />;
+                playpause = <components.PlaybackButton action='play'  icon='play'  />;
             }
             else {
-                playpause = <Button action='pause' icon='pause' />;
+                playpause = <components.PlaybackButton action='pause' icon='pause' />;
             }
 
             return (
                 <div className="controls-buttons">
-                    <Button action='previous' icon='fast-backward' />
+                    <components.PlaybackButton action='previous' icon='fast-backward' />
                     {playpause}
-                    <Button action='stop'     icon='stop'          />
-                    <Button action='next'     icon='fast-forward'  />
+                    <components.PlaybackButton action='stop'     icon='stop'          />
+                    <components.PlaybackButton action='next'     icon='fast-forward'  />
                 </div>
             );
         }
     });
 
-    var Player = React.createClass({
+    components.Player = React.createClass({
         getInitialState: function() {
             this.fetchAndSetState();
             return {};
@@ -101,7 +106,7 @@
         fetchAndSetState: function() {
             var self = this;
 
-            window.APP.mpd('currentsong', function(err, currentsong) {
+            window.MPD_APP.mpd('currentsong', function(err, currentsong) {
                 var data = {},
                     lines, i, line, index, key, val;
 
@@ -135,8 +140,8 @@
 
     React.renderComponent(
         <div className="controls-container">
-            <Controls />
-            <Player />
+            <components.Controls />
+            <components.Player />
         </div>,
         document.getElementById('controls')
     );

@@ -2,10 +2,13 @@
     "use strict";
 
     var socket = io();
+    var app = {};
 
-    window.APP = {};
+    // Store a global reference to the app, which can be referenced from
+    // other components.
+    window.MPD_APP = app;
 
-    window.APP.mpd = function(command, args, callback) {
+    app.mpd = function(command, args, callback) {
         var last = arguments.length - 1;
 
         if (arguments.length < 2) {
@@ -25,6 +28,8 @@
             'args': args
         }, callback);
     };
+
+    app.views = {};
 
     socket.on('mpd:changed', function(message) {
         $(window).trigger('mpd:changed', message);
