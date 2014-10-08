@@ -29,7 +29,42 @@ app.listen = app.server.listen.bind(app.server);
 app.io = io(app.server);
 app.mpd = require('../../lib/mpd');
 app.mpd.connect(app.config.mpd.port, app.config.mpd.host);
-// @todo If the connection gets lost, reestablish the connection.
+
+
+/**
+ * If the connection to MPD gets lost, we try to reestablish the
+ * connection. To prevent spamming, we wait a little longer between each
+ * attempt (up to a certain maximum).
+ */
+var retryAfterMS_initial = 250;
+var retryAfterMS_incr = 250;
+var retryAfterMS_max = 5000;
+var retryAfterMS = retryAfterMS_initial;
+
+function reconnectMPD(err) {
+    if (err) {
+        app.logger.error('MPD connection lost: %s', err.message);
+    }
+    else {
+        app.logger.warning('MPD connection lost.');
+    }
+
+    setTimeout(function reconnect() {
+        if (retryAfterMS < retryAfterMS_max) {
+            retryAfterMS += retryAfterMS_incr;
+        }
+
+        app.logger.info('Trying to reestablish MPD connection.');
+        app.mpd.connect(app.config.mpd.port, app.config.mpd.host);
+    }, retryAfterMS);
+}
+
+app.mpd.on('connection:closed', reconnectMPD);
+app.mpd.on('connection:error', reconnectMPD);
+app.mpd.on('connection:ready', function() {
+    retryAfterMS = retryAfterMS_initial;
+    app.logger.info('Successfully connected to MPD.');
+});
 
 
 /** ## Template engine */

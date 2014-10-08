@@ -38,7 +38,13 @@ exports.once = <span class="hljs-function"><span class="hljs-keyword">function</
 
 exports.removeListener = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeListener</span><span class="hljs-params">()</span> {</span>
     ev.removeListener.apply(ev, <span class="hljs-built_in">arguments</span>);
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="connection">Connection</h2></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Connects to MPD.</p>
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="connection">Connection</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Cleans up after the connection gets closed.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">cleanup</span><span class="hljs-params">()</span> {</span>
+    client = <span class="hljs-literal">null</span>;
+    queue.length = <span class="hljs-number">0</span>;
+    dataQueue.length = <span class="hljs-number">0</span>;
+    mpdStatus = <span class="hljs-literal">null</span>;
+    ev.removeListener(<span class="hljs-string">'queue:updated'</span>, queueUpdatedHandler);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Remove <em>all</em> listeners on the _data event.</p></div></div><div class="code"><div class="wrapper">    ev.removeAllListeners(<span class="hljs-string">'_data'</span>);
+}</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Connects to MPD.</p>
 <p>Parameters:</p>
 <ul>
 <li><p><strong>port is optional and must be a Number.</strong></p>
@@ -54,15 +60,26 @@ exports.removeListener = <span class="hljs-function"><span class="hljs-keyword">
         dataQueue.length = <span class="hljs-number">0</span>; <span class="hljs-comment">// clear data queue</span>
         mpdStatus = <span class="hljs-literal">null</span>;
 
-        client = net.connect({
-            <span class="hljs-string">'port'</span>: port,
-            <span class="hljs-string">'host'</span>: host,
-        }, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onConnect</span><span class="hljs-params">()</span> {</span>
-            ev.once(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The first data coming back is the <code>OK MPD version</code> line.</p></div></div><div class="code"><div class="wrapper">                mpdStatus = dataQueue.shift();
-                client.write(<span class="hljs-string">'idle\n'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
-                    ev.emit(<span class="hljs-string">'connection:ready'</span>);
+        <span class="hljs-keyword">try</span> {
+            client = net.connect({
+                <span class="hljs-string">'port'</span>: port,
+                <span class="hljs-string">'host'</span>: host,
+            }, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onConnect</span><span class="hljs-params">()</span> {</span>
+                ev.once(<span class="hljs-string">'_data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The first data coming back is the <code>OK MPD version</code> line.</p></div></div><div class="code"><div class="wrapper">                    mpdStatus = dataQueue.shift();
+                    client.write(<span class="hljs-string">'idle\n'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                        ev.emit(<span class="hljs-string">'connection:ready'</span>);
+                    });
                 });
             });
+        }
+        <span class="hljs-keyword">catch</span> (err) {
+            ev.emit(<span class="hljs-string">'connection:error'</span>, err);
+            <span class="hljs-keyword">return</span> cleanup();
+        }
+
+        client.on(<span class="hljs-string">'error'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onError</span><span class="hljs-params">(err)</span> {</span>
+            ev.emit(<span class="hljs-string">'connection:error'</span>, err);
+            <span class="hljs-keyword">return</span> cleanup();
         });
 
         client.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onData</span><span class="hljs-params">(data)</span> {</span>
@@ -79,18 +96,14 @@ exports.removeListener = <span class="hljs-function"><span class="hljs-keyword">
             }
             <span class="hljs-keyword">else</span> {
                 dataQueue.push(data);
-                ev.emit(<span class="hljs-string">'data'</span>);
+                ev.emit(<span class="hljs-string">'_data'</span>);
             }
         });
 
-        ev.once(<span class="hljs-string">'queue:updated'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
-            shift();
-        });
+        ev.once(<span class="hljs-string">'queue:updated'</span>, queueUpdatedHandler);
 
         client.on(<span class="hljs-string">'end'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onEnd</span><span class="hljs-params">()</span> {</span>
-            client = <span class="hljs-literal">null</span>;
-            queue.length = <span class="hljs-number">0</span>;
-            dataQueue.length = <span class="hljs-number">0</span>;
+            cleanup();
             ev.emit(<span class="hljs-string">'connection:closed'</span>);
         });
     }
@@ -145,7 +158,10 @@ exports.removeListener = <span class="hljs-function"><span class="hljs-keyword">
     setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
         ev.emit(<span class="hljs-string">'queue:updated'</span>);
     }, <span class="hljs-number">0</span>);
-};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="private-methods">Private methods</h1></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Shifts a command from the queue and executes it.</p>
+};</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="private-methods">Private methods</h1></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Wrapper method for shift. This can be used in events handlers, as any
+arguments are not passed along to shift.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">queueUpdatedHandler</span><span class="hljs-params">()</span> {</span>
+    shift();
+}</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Shifts a command from the queue and executes it.</p>
 <p>If, after finishing the command, there are more commands on the
 queue, these commands are also executed. When there are no commands
 left, the <code>idle</code> command is sent.</p>
@@ -170,9 +186,7 @@ left, the <code>idle</code> command is sent.</p>
                 <span class="hljs-keyword">if</span> (queue.length) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the queue is not empty, don&#39;t go idle.</p></div></div><div class="code"><div class="wrapper">                    shift(<span class="hljs-literal">true</span>);
                 }
                 <span class="hljs-keyword">else</span> {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Nothing left to do, wait for more input.</p></div></div><div class="code"><div class="wrapper">                    client.write(<span class="hljs-string">'idle\n'</span>);
-                    ev.once(<span class="hljs-string">'queue:updated'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
-                        shift();
-                    });
+                    ev.once(<span class="hljs-string">'queue:updated'</span>, queueUpdatedHandler);
                 }
             });
         });
@@ -207,6 +221,6 @@ written.</p></div></div><div class="code"><div class="wrapper">    <span class="
             <span class="hljs-keyword">return</span>;
         }
 
-        ev.once(<span class="hljs-string">'data'</span>, process);
+        ev.once(<span class="hljs-string">'_data'</span>, process);
     }
 }</div></div></div></div></body></html>
