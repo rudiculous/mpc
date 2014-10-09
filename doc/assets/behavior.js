@@ -190,6 +190,28 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                           "foldPrefix": "^",
                           "name": "CoffeeScript"
                         },
+                        "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/lib/date.coffee",
+                        "projectPath": "app/assets/javascripts/lib/date.coffee",
+                        "targetPath": "app/assets/javascripts/lib/date",
+                        "pageTitle": "app/assets/javascripts/lib/date",
+                        "title": "date"
+                      },
+                      "depth": 5,
+                      "outline": []
+                    }, {
+                      "type": "file",
+                      "data": {
+                        "language": {
+                          "nameMatchers": [".coffee", "Cakefile"],
+                          "pygmentsLexer": "coffee-script",
+                          "highlightJS": "coffeescript",
+                          "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                          "strictMultiLineEnd": false,
+                          "singleLineComment": ["#"],
+                          "ignorePrefix": "}",
+                          "foldPrefix": "^",
+                          "name": "CoffeeScript"
+                        },
                         "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/lib/querystring.coffee",
                         "projectPath": "app/assets/javascripts/lib/querystring.coffee",
                         "targetPath": "app/assets/javascripts/lib/querystring",

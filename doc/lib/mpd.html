@@ -176,23 +176,14 @@ left, the <code>idle</code> command is sent.</p>
     }
 
     <span class="hljs-keyword">var</span> item = queue.shift();
+
+    <span class="hljs-keyword">if</span> (!item) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>No item?</p></div></div><div class="code"><div class="wrapper">        console.error(<span class="hljs-string">'Empty item was pushed onto the queue!'</span>);
+        done();
+    }
+
     <span class="hljs-keyword">var</span> command = item.command;
     <span class="hljs-keyword">var</span> args = item.args;
     <span class="hljs-keyword">var</span> callback = item.callback;
-
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">act</span><span class="hljs-params">()</span> {</span>
-        client.write(command + args + <span class="hljs-string">'\n'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
-            getData(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
-                callback.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
-                
-                <span class="hljs-keyword">if</span> (queue.length) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the queue is not empty, don&#39;t go idle.</p></div></div><div class="code"><div class="wrapper">                    shift(<span class="hljs-literal">true</span>);
-                }
-                <span class="hljs-keyword">else</span> {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Nothing left to do, wait for more input.</p></div></div><div class="code"><div class="wrapper">                    client.write(<span class="hljs-string">'idle\n'</span>);
-                    ev.once(<span class="hljs-string">'queue:updated'</span>, queueUpdatedHandler);
-                }
-            });
-        });
-    }
 
     <span class="hljs-keyword">if</span> (skipNoIdle) {
         act();
@@ -200,6 +191,23 @@ left, the <code>idle</code> command is sent.</p>
     <span class="hljs-keyword">else</span> {
         client.write(<span class="hljs-string">'noidle\n'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
             getData(act);
+        });
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">done</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">if</span> (queue.length) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the queue is not empty, don&#39;t go idle.</p></div></div><div class="code"><div class="wrapper">            shift(<span class="hljs-literal">true</span>);
+        }
+        <span class="hljs-keyword">else</span> {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Nothing left to do, wait for more input.</p></div></div><div class="code"><div class="wrapper">            client.write(<span class="hljs-string">'idle\n'</span>);
+            ev.once(<span class="hljs-string">'queue:updated'</span>, queueUpdatedHandler);
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">act</span><span class="hljs-params">()</span> {</span>
+        client.write(command + args + <span class="hljs-string">'\n'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            getData(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+                callback.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>);
+                done();
+            });
         });
     }
 }</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Waits for a response from MPD.</p>

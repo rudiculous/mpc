@@ -4,6 +4,18 @@
     "use strict";
 
     var components = {};
+    var formatTime = window.APP_LIB.formatTime;
+
+    /**
+     * In order to keep the progress bar of the player up to date, we
+     * have to keep track of the elapsed time. We don't automatically
+     * get this value, so we try to update it ourselves. Every once in a
+     * while we have to check with the server, just to make sure we are
+     * still in sync.
+     */
+    var progressUpdater = null;
+    var progressInterval = 15000;
+
     window.MPD_APP.views.playbackControls = components;
 
     components.PlaybackButton = React.createClass({
@@ -32,11 +44,29 @@
     components.Controls = React.createClass({
         getInitialState: function() {
             this.fetchAndSetState();
-            return {};
+            return {
+                'progress': {}
+            };
         },
 
         componentDidMount: function() {
             var self = this;
+
+            // Increases progress while playing.
+            setInterval(function() {
+                if (self.state.state !== 'play') {
+                    return;
+                }
+
+                if (self.state.progress && self.state.progress.elapsed) {
+                    self.setState({
+                        'progress': {
+                            'elapsed': self.state.progress.elapsed + 1,
+                            'duration': self.state.progress.duration
+                        }
+                    });
+                }
+            }, 1000);
 
             document.addEventListener('mpd:changed:player', function() {
                 self.fetchAndSetState();
@@ -46,9 +76,14 @@
         fetchAndSetState: function() {
             var self = this;
 
+            if (progressUpdater !== null) {
+                clearTimeout(progressUpdater);
+                progressUpdater = null;
+            }
+
             window.MPD_APP.mpd('status', function(err, status) {
                 var data = {},
-                    lines, i, line, index, key, val;
+                    lines, i, line, index, key, val, elapsed, duration;
 
                 if (err) {
                     return console.error(err);
@@ -65,12 +100,30 @@
                     }
                 }
 
+                data.progress = {};
+                if (data.time) {
+                    i = data.time.indexOf(':');
+
+                    if (i > -1) {
+                        data.progress.elapsed = Number(data.time.substring(0, i));
+                        data.progress.duration = Number(data.time.substring(i + 1));
+                    }
+                }
+
                 self.replaceState(data);
+
+                // If currently playing, check the status again in a
+                // little while.
+                if (data.state === 'play') {
+                    progressUpdater = setTimeout(function() {
+                        self.fetchAndSetState();
+                    }, progressInterval);
+                }
             });
         },
 
         render: function() {
-            var playpause;
+            var playpause, progress = 0;
             if (this.state.state !== 'play') {
                 playpause = <components.PlaybackButton action='play'  icon='play'  />;
             }
@@ -78,12 +131,23 @@
                 playpause = <components.PlaybackButton action='pause' icon='pause' />;
             }
 
+            if (this.state.progress && this.state.progress.duration) {
+                progress = 100 * this.state.progress.elapsed / this.state.progress.duration;
+                if (progress > 100) progress = 100;
+                if (!(progress >= 0)) progress = 0;
+            }
+
             return (
-                <div className="controls-buttons">
-                    <components.PlaybackButton action='previous' icon='fast-backward' />
-                    {playpause}
-                    <components.PlaybackButton action='stop'     icon='stop'          />
-                    <components.PlaybackButton action='next'     icon='fast-forward'  />
+                <div>
+                    <div className="controls-buttons">
+                        <components.PlaybackButton action='previous' icon='fast-backward' />
+                        {playpause}
+                        <components.PlaybackButton action='stop'     icon='stop'          />
+                        <components.PlaybackButton action='next'     icon='fast-forward'  />
+                    </div>
+                    <div className='playing-prog'>
+                        <div className='playing-prog-bar' style={{width: String(progress) + '%'}} />
+                    </div>
                 </div>
             );
         }
