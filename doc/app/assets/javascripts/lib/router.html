@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="en"><head><title>app/assets/javascripts/lib/router</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../../"><meta name="groc-document-path" content="app/assets/javascripts/lib/router"><meta name="groc-project-path" content="app/assets/javascripts/lib/router.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../../../assets/style.css"><script type="text/javascript" src="../../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">app/assets/javascripts/lib/router.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-string">"use strict"</span>
+
+<span class="hljs-built_in">window</span>.APP_LIB ||= {}
+
+
+routes = []
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Route</span></span>
+  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(path, <span class="hljs-property">@action</span>)</span> -&gt;</span>
+    <span class="hljs-property">@path</span> = <span class="hljs-keyword">new</span> RegExp <span class="hljs-string">"^<span class="hljs-subst">#{path}</span>$"</span>
+
+  <span class="hljs-attribute">matches</span>: <span class="hljs-function"><span class="hljs-params">(path)</span> -&gt;</span>
+    path.match(<span class="hljs-property">@path</span>)
+
+  <span class="hljs-attribute">execute</span>: <span class="hljs-function"><span class="hljs-params">(where, params)</span> -&gt;</span>
+    <span class="hljs-property">@action</span>.mount where, params
+
+
+<span class="hljs-function"><span class="hljs-title">router</span> = <span class="hljs-params">(where)</span> -&gt;</span>
+  <span class="hljs-function"><span class="hljs-params">(event)</span> -&gt;</span>
+    {pathname, search} = <span class="hljs-built_in">document</span>.location
+
+    params = <span class="hljs-built_in">window</span>.APP_LIB.parseQueryString search
+
+    React.unmountComponentAtNode main
+
+    <span class="hljs-keyword">for</span> route <span class="hljs-keyword">in</span> routes
+      match = route.matches pathname
+      <span class="hljs-keyword">if</span> match
+        route.execute where,
+          <span class="hljs-attribute">params</span>: params
+          <span class="hljs-attribute">match</span>: match
+        <span class="hljs-keyword">return</span>
+
+    <span class="hljs-built_in">console</span>.warn <span class="hljs-string">'no route matched'</span>
+    <span class="hljs-keyword">try</span>
+      <span class="hljs-built_in">window</span>.MPD_APP.views.routeNotFound.mount where,
+        <span class="hljs-attribute">params</span>:params
+    <span class="hljs-keyword">catch</span> err
+      <span class="hljs-built_in">console</span>.error <span class="hljs-string">'Error while showing routeNotFound view.'</span>, err
+
+    <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creates a route.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">window</span>.APP_LIB.<span class="hljs-function"><span class="hljs-title">route</span> = <span class="hljs-params">(paths, action)</span> -&gt;</span>
+  <span class="hljs-keyword">if</span> !Array.isArray(paths)
+    paths = [paths]
+
+  <span class="hljs-keyword">for</span> path <span class="hljs-keyword">in</span> paths
+    routes.push(<span class="hljs-keyword">new</span> Route(path, action))
+
+  <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>When navigation takes place, run the router.</p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'navigation:page'</span>, router, <span class="hljs-literal">false</span></div></div></div></div></body></html>

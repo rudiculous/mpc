@@ -4,20 +4,21 @@
     "use strict";
 
     var components = {};
-    window.MPD_APP.views.browser = components;
+    window.MPD_APP.views.nowPlaying = components;
 
-    components.Browser = React.createClass({
+    components.NowPlaying = React.createClass({
         render: function() {
             return (
-                <div className='music-browser' />
+                <div className='now-playing' />
             );
         }
     });
 
     components.mount = function(where, req) {
         React.renderComponent(
-            <components.Browser />,
+            <components.NowPlaying />,
             where
         );
     };
 }());
+

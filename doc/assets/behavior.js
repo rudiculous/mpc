@@ -138,11 +138,11 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "foldPrefix": "^",
                       "name": "CoffeeScript"
                     },
-                    "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/main.coffee",
-                    "projectPath": "app/assets/javascripts/main.coffee",
-                    "targetPath": "app/assets/javascripts/main",
-                    "pageTitle": "app/assets/javascripts/main",
-                    "title": "main"
+                    "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/bootstrap.coffee",
+                    "projectPath": "app/assets/javascripts/bootstrap.coffee",
+                    "targetPath": "app/assets/javascripts/bootstrap",
+                    "pageTitle": "app/assets/javascripts/bootstrap",
+                    "title": "bootstrap"
                   },
                   "depth": 4,
                   "outline": []
@@ -160,11 +160,87 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "foldPrefix": "^",
                       "name": "CoffeeScript"
                     },
-                    "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/router.coffee",
-                    "projectPath": "app/assets/javascripts/router.coffee",
-                    "targetPath": "app/assets/javascripts/router",
-                    "pageTitle": "app/assets/javascripts/router",
-                    "title": "router"
+                    "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/initialize.coffee",
+                    "projectPath": "app/assets/javascripts/initialize.coffee",
+                    "targetPath": "app/assets/javascripts/initialize",
+                    "pageTitle": "app/assets/javascripts/initialize",
+                    "title": "initialize"
+                  },
+                  "depth": 4,
+                  "outline": []
+                }, {
+                  "type": "folder",
+                  "data": {
+                    "path": "app/assets/javascripts/lib",
+                    "title": "lib"
+                  },
+                  "depth": 4,
+                  "children": [
+                    {
+                      "type": "file",
+                      "data": {
+                        "language": {
+                          "nameMatchers": [".coffee", "Cakefile"],
+                          "pygmentsLexer": "coffee-script",
+                          "highlightJS": "coffeescript",
+                          "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                          "strictMultiLineEnd": false,
+                          "singleLineComment": ["#"],
+                          "ignorePrefix": "}",
+                          "foldPrefix": "^",
+                          "name": "CoffeeScript"
+                        },
+                        "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/lib/querystring.coffee",
+                        "projectPath": "app/assets/javascripts/lib/querystring.coffee",
+                        "targetPath": "app/assets/javascripts/lib/querystring",
+                        "pageTitle": "app/assets/javascripts/lib/querystring",
+                        "title": "querystring"
+                      },
+                      "depth": 5,
+                      "outline": []
+                    }, {
+                      "type": "file",
+                      "data": {
+                        "language": {
+                          "nameMatchers": [".coffee", "Cakefile"],
+                          "pygmentsLexer": "coffee-script",
+                          "highlightJS": "coffeescript",
+                          "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                          "strictMultiLineEnd": false,
+                          "singleLineComment": ["#"],
+                          "ignorePrefix": "}",
+                          "foldPrefix": "^",
+                          "name": "CoffeeScript"
+                        },
+                        "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/lib/router.coffee",
+                        "projectPath": "app/assets/javascripts/lib/router.coffee",
+                        "targetPath": "app/assets/javascripts/lib/router",
+                        "pageTitle": "app/assets/javascripts/lib/router",
+                        "title": "router"
+                      },
+                      "depth": 5,
+                      "outline": []
+                    }
+                  ]
+                }, {
+                  "type": "file",
+                  "data": {
+                    "language": {
+                      "nameMatchers": [".coffee", "Cakefile"],
+                      "pygmentsLexer": "coffee-script",
+                      "highlightJS": "coffeescript",
+                      "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                      "strictMultiLineEnd": false,
+                      "singleLineComment": ["#"],
+                      "ignorePrefix": "}",
+                      "foldPrefix": "^",
+                      "name": "CoffeeScript"
+                    },
+                    "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/routes.coffee",
+                    "projectPath": "app/assets/javascripts/routes.coffee",
+                    "targetPath": "app/assets/javascripts/routes",
+                    "pageTitle": "app/assets/javascripts/routes",
+                    "title": "routes"
                   },
                   "depth": 4,
                   "outline": []

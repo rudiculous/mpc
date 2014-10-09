@@ -12,9 +12,11 @@
             "socket.io-1.1.0.js",
             "react-0.11.2.js",
 
-            "main.coffee",
+            "lib/*.coffee",
+            "initialize.coffee",
             "views/*.jsx",
-            "router.coffee"
+            "bootstrap.coffee",
+            "routes.coffee"
         ]
     },
     "stylesheets": {

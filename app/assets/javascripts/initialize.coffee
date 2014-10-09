@@ -1,5 +1,12 @@
 "use strict"
 
+# Initializes the application.
+#
+# * Creates a websocket connection.
+# * Creates a function that connects to MPD.
+# * Initializes the pushstate and popstate event handlers.
+# * Creates an initial state.
+
 socket = io()
 app = {}
 
@@ -28,6 +35,11 @@ app.mpd = (command, args, callback) ->
 
 app.views = {}
 
+app.blocks =
+  navigation: document.getElementById 'navigation'
+  controls: document.getElementById 'controls'
+  main: document.getElementById 'main'
+
 # Dispatch events when something has changed.
 socket.on 'mpd:changed', (what) ->
   document.dispatchEvent(new CustomEvent('mpd:changed',
@@ -38,7 +50,6 @@ socket.on 'mpd:changed', (what) ->
   document.dispatchEvent(new CustomEvent('mpd:changed:' + what))
 
   return
-
 
 # Catch navigation events.
 #
