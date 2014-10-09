@@ -132,3 +132,5 @@ setTimeout ->
 
   document.dispatchEvent(new CustomEvent('navigation:page'))
 , 0
+
+# vim: set ft=coffee:

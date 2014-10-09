@@ -6,3 +6,5 @@
 
 route ['/', '/now_playing'], views.nowPlaying
 route '/browser', views.browser
+
+# vim: set ft=coffee:

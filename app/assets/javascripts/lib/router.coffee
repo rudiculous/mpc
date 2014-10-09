@@ -56,3 +56,5 @@ window.APP_LIB.route = (paths, action) ->
 
 # When navigation takes place, run the router.
 document.addEventListener 'navigation:page', router, false
+
+# vim: set ft=coffee:

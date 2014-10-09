@@ -57,3 +57,5 @@ stringifyQuery = (params, separator = '&') ->
 
 window.APP_LIB.parseQueryString = parseQueryString
 window.APP_LIB.stringifyQuery = stringifyQuery
+
+# vim: set ft=coffee:
