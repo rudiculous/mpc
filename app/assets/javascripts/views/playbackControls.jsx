@@ -65,7 +65,7 @@
                     }
                 }
 
-                self.setState(data);
+                self.replaceState(data);
             });
         },
 
@@ -98,8 +98,16 @@
         componentDidMount: function() {
             var self = this;
 
-            document.addEventListener('mpd:changed:player', function() {
-                self.fetchAndSetState();
+            document.addEventListener('mpd:changed', function(event) {
+                var what = null;
+
+                if (event.detail) {
+                    what = event.detail.what;
+                }
+
+                if (what === 'player' || what === 'playlist') {
+                    self.fetchAndSetState();
+                }
             }, false);
         },
 
@@ -125,7 +133,7 @@
                     }
                 }
 
-                self.setState(data);
+                self.replaceState(data);
             });
         },
 

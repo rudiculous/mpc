@@ -25,7 +25,8 @@ app = {}
 
 app.views = {}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Dispatch events when something has changed.</p></div></div><div class="code"><div class="wrapper">socket.<span class="hljs-literal">on</span> <span class="hljs-string">'mpd:changed'</span>, <span class="hljs-function"><span class="hljs-params">(what)</span> -&gt;</span>
   <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'mpd:changed'</span>,
-    <span class="hljs-attribute">what</span>: what
+    <span class="hljs-attribute">detail</span>:
+      <span class="hljs-attribute">what</span>: what
   ))
 
   <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'mpd:changed:'</span> + what))

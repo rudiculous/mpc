@@ -31,7 +31,8 @@ app.views = {}
 # Dispatch events when something has changed.
 socket.on 'mpd:changed', (what) ->
   document.dispatchEvent(new CustomEvent('mpd:changed',
-    what: what
+    detail:
+      what: what
   ))
 
   document.dispatchEvent(new CustomEvent('mpd:changed:' + what))
