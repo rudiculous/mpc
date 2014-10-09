@@ -62,9 +62,7 @@ Loosely based on <a href="https://github.com/rails/turbolinks">turbolinks</a></p
     <span class="hljs-attribute">search</span>: link.search
 
   history.pushState(state, <span class="hljs-string">''</span>, link.href)
-  <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>,
-    <span class="hljs-attribute">detail</span>: state
-  ))
+  <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>))
 
   <span class="hljs-keyword">return</span>
 
@@ -72,14 +70,14 @@ Loosely based on <a href="https://github.com/rails/turbolinks">turbolinks</a></p
 that is fired by some browsers on the initial page load.</p>
 <p>TODO: Is this (still) necessary?</p></div></div><div class="code"><div class="wrapper">setTimeout<span class="hljs-function"> -&gt;</span>
   <span class="hljs-built_in">window</span>.addEventListener <span class="hljs-string">'popstate'</span>, <span class="hljs-function"><span class="hljs-params">(event)</span> -&gt;</span>
-    <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>,
-      <span class="hljs-attribute">detail</span>: event.state
-    ))
+    <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>))
 , <span class="hljs-number">500</span>
 
 setTimeout<span class="hljs-function"> -&gt;</span>
-  <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>,
-    <span class="hljs-attribute">detail</span>:
+  state = history.state
+
+  <span class="hljs-keyword">unless</span> state
+    state =
       <span class="hljs-attribute">hash</span>: <span class="hljs-built_in">document</span>.location.hash
       <span class="hljs-attribute">host</span>: <span class="hljs-built_in">document</span>.location.host
       <span class="hljs-attribute">hostname</span>: <span class="hljs-built_in">document</span>.location.hostname
@@ -89,5 +87,8 @@ setTimeout<span class="hljs-function"> -&gt;</span>
       <span class="hljs-attribute">port</span>: <span class="hljs-built_in">document</span>.location.port
       <span class="hljs-attribute">protocol</span>: <span class="hljs-built_in">document</span>.location.protocol
       <span class="hljs-attribute">search</span>: <span class="hljs-built_in">document</span>.location.search
-  ))
+
+    history.replaceState(state, <span class="hljs-string">''</span>, state.href)
+
+  <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>))
 , <span class="hljs-number">0</span></div></div></div></div></body></html>

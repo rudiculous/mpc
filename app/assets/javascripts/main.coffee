@@ -83,9 +83,7 @@ clickHandler = (event) ->
     search: link.search
 
   history.pushState(state, '', link.href)
-  document.dispatchEvent(new CustomEvent('navigation:page',
-    detail: state
-  ))
+  document.dispatchEvent(new CustomEvent('navigation:page'))
 
   return
 
@@ -97,14 +95,14 @@ document.addEventListener 'click', attachClickHandler, true
 # @todo Is this (still) necessary?
 setTimeout ->
   window.addEventListener 'popstate', (event) ->
-    document.dispatchEvent(new CustomEvent('navigation:page',
-      detail: event.state
-    ))
+    document.dispatchEvent(new CustomEvent('navigation:page'))
 , 500
 
 setTimeout ->
-  document.dispatchEvent(new CustomEvent('navigation:page',
-    detail:
+  state = history.state
+
+  unless state
+    state =
       hash: document.location.hash
       host: document.location.host
       hostname: document.location.hostname
@@ -114,5 +112,8 @@ setTimeout ->
       port: document.location.port
       protocol: document.location.protocol
       search: document.location.search
-  ))
+
+    history.replaceState(state, '', state.href)
+
+  document.dispatchEvent(new CustomEvent('navigation:page'))
 , 0
