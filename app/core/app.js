@@ -94,3 +94,8 @@ else {
     app.use(assets);
     app.use('/assets', assets.serveAssets);
 }
+
+/** Set locals. Locals are made available to the template parser. */
+Object.keys(settings.config.locals).forEach(function (key) {
+    app.locals[key] = settings.config.locals[key];
+});

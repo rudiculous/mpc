@@ -3,16 +3,59 @@
 (function() {
     "use strict";
 
+    function formatTime(seconds) {
+        var formatted = '',
+            nr;
+
+        seconds = Number(seconds);
+
+        if (seconds > 3600) {
+            nr = Math.floor((seconds - (seconds % 3600)) / 3600);
+            formatted += String(nr) + ':';
+            seconds = seconds % 3600;
+        }
+
+        {
+            nr = Math.floor((seconds - (seconds % 60)) / 60);
+            if (formatted !== '' && nr < 10) {
+                nr = '0' + nr;
+            }
+            formatted += String(nr) + ':';
+            seconds = seconds % 60;
+        }
+
+        seconds = Math.floor(seconds);
+
+        if (seconds < 10) {
+            seconds = '0' + seconds;
+        }
+        formatted += String(seconds);
+
+        return formatted;
+    }
+
     var components = {};
     window.MPD_APP.views.nowPlaying = components;
 
     components.SingleEntry = React.createClass({
+        clickHandler: function() {
+            if (this.props.song.Pos) {
+                window.MPD_APP.mpd('play', this.props.song.Pos, function(err) {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
+            }
+        },
+
         render: function() {
             return (
-                <tr className={this.props.active ? 'info now-playing' : ''}>
-                    <td>{this.props.song.Artist}</td>
-                    <td>{this.props.song.Album}</td>
+                <tr className={this.props.active ? 'info now-playing' : ''} onClick={this.clickHandler}>
+                    <td style={{'text-align':'center'}}><span className='glyphicon glyphicon-play' style={this.props.active ? {} : {display:'none'}} /></td>
+                    <td>{this.props.song.Artist} - {this.props.song.Album}</td>
+                    <td style={{'text-align':'right'}}>{this.props.song.Track}</td>
                     <td>{this.props.song.Title}</td>
+                    <td style={{'text-align':'right'}}>{formatTime(this.props.song.Time)}</td>
                 </tr>
             );
         }
@@ -87,8 +130,11 @@
                 }
 
                 if (song !== null) {
+                    active = currentsong.dataset
+                            && currentsong.dataset.pos === song.Pos;
+
                     data.songs.push(
-                        <components.SingleEntry key={song.Pos} song={song} />
+                        <components.SingleEntry key={song.Pos} song={song} active={active} />
                     );
                 }
 
@@ -100,7 +146,23 @@
             return (
                 <div className='now-playing'>
                     <h1>Now Playing</h1>
-                    <table className='playlist table table-striped table-condensed'>
+                    <table className='playlist table table-striped table-condensed table-hover'>
+                        <col style={{width: '65px'}} />
+                        <col style={{width: '400px'}} />
+                        <col style={{width: '50px'}} />
+                        <col />
+                        <col style={{width: '70px'}} />
+
+                        <thead>
+                            <th>Playing</th>
+                            <th>Artist - Album</th>
+                            <th>Track</th>
+                            <th>Title</th>
+                            <th>Duration</th>
+                        </thead>
+
+                        <tfoot />
+
                         <tbody>
                             {this.state.songs}
                         </tbody>

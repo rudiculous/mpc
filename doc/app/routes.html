@@ -36,7 +36,7 @@ app.io.on(<span class="hljs-string">'connection'</span>, <span class="hljs-funct
         }
     });
 
-    socket.on(<span class="hljs-string">'disconnect'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">disconnect</span><span class="hljs-params">()</span> {</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>cleanup</p></div></div><div class="code"><div class="wrapper">        app.mpd.removeListener(<span class="hljs-string">'updated'</span>, changedHandler);
+    socket.on(<span class="hljs-string">'disconnect'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">disconnect</span><span class="hljs-params">()</span> {</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>cleanup</p></div></div><div class="code"><div class="wrapper">        app.mpd.removeListener(<span class="hljs-string">'changed'</span>, changedHandler);
     });
 
     socket.emit(<span class="hljs-string">'socket:ready'</span>);

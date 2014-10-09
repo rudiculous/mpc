@@ -41,7 +41,7 @@ app.io.on('connection', function connection(socket) {
 
     socket.on('disconnect', function disconnect() {
         // cleanup
-        app.mpd.removeListener('updated', changedHandler);
+        app.mpd.removeListener('changed', changedHandler);
     });
 
     socket.emit('socket:ready');
