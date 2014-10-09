@@ -17,7 +17,7 @@ class Route
     @action.mount where, params
 
 
-router = (where) ->
+window.APP_LIB.router = (where) ->
   (event) ->
     {pathname, search} = document.location
 
@@ -52,9 +52,5 @@ window.APP_LIB.route = (paths, action) ->
     routes.push(new Route(path, action))
 
   return
-
-
-# When navigation takes place, run the router.
-document.addEventListener 'navigation:page', router, false
 
 # vim: set ft=coffee:

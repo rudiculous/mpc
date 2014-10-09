@@ -51,6 +51,12 @@ socket.on 'mpd:changed', (what) ->
 
   return
 
+
+# When navigation takes place, run the router.
+router = window.APP_LIB.router
+document.addEventListener 'navigation:page', router(app.blocks.main), false
+
+
 # Catch navigation events.
 #
 # Loosely based on [turbolinks](https://github.com/rails/turbolinks)
