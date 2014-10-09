@@ -3,7 +3,7 @@
 views = window.MPD_APP.views
 
 document.addEventListener 'navigation:page', ->
-  {pathname} = history.state
+  {pathname} = history.state.location
 
   console.log pathname
 

@@ -3,7 +3,7 @@
 views = <span class="hljs-built_in">window</span>.MPD_APP.views
 
 <span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'navigation:page'</span>,<span class="hljs-function"> -&gt;</span>
-  {pathname} = history.state
+  {pathname} = history.state.location
 
   <span class="hljs-built_in">console</span>.log pathname
 

@@ -72,7 +72,8 @@ clickHandler = (event) ->
 
   event.preventDefault()
 
-  state =
+  state = history.state
+  state.location =
     hash: link.hash
     host: link.host
     hostname: link.hostname
@@ -102,19 +103,21 @@ setTimeout ->
 setTimeout ->
   state = history.state
 
+  # If no state yet, create an initial state.
   unless state
     state =
-      hash: document.location.hash
-      host: document.location.host
-      hostname: document.location.hostname
-      href: document.location.href
-      origin: document.location.origin
-      pathname: document.location.pathname
-      port: document.location.port
-      protocol: document.location.protocol
-      search: document.location.search
+      location:
+        hash: document.location.hash
+        host: document.location.host
+        hostname: document.location.hostname
+        href: document.location.href
+        origin: document.location.origin
+        pathname: document.location.pathname
+        port: document.location.port
+        protocol: document.location.protocol
+        search: document.location.search
 
-    history.replaceState(state, '', state.href)
+    history.replaceState(state, '', document.location.href)
 
   document.dispatchEvent(new CustomEvent('navigation:page'))
 , 0
