@@ -13,7 +13,8 @@
             "react-0.11.2.js",
 
             "main.coffee",
-            "views/*.jsx"
+            "views/*.jsx",
+            "router.coffee"
         ]
     },
     "stylesheets": {

@@ -3,7 +3,10 @@
 (function() {
     "use strict";
 
-    var Browser = React.createClass({
+    var components = {};
+    window.MPD_APP.views.browser = components;
+
+    components.Browser = React.createClass({
         render: function() {
             return (
                 <div className='music-browser' />
@@ -11,8 +14,10 @@
         }
     });
 
-    React.renderComponent(
-        <Browser />,
-        document.getElementById('main')
-    );
+    components.mount = function(where) {
+        React.renderComponent(
+            <components.Browser />,
+            where
+        );
+    };
 }());
