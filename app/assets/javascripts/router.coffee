@@ -2,13 +2,22 @@
 
 views = window.MPD_APP.views
 
+getDetails = (detail) ->
+  result = {}
+  for key in [ 'hash' , 'host' , 'hostname' , 'href' , 'origin' ,
+               'pathname' , 'port' , 'protocol' , 'search' ]
+    result[key] =
+      if detail && detail[key]
+        detail[key]
+      else
+        document.location[key]
+  return result
+
 document.addEventListener 'navigation:page', (event) ->
-  if event.detail
-    {href, pathname} = event.detail
+  {href, pathname} = getDetails(event.detail)
 
-  href = document.location.href unless href
-  pathname = document.location.pathname unless pathname
+  console.log pathname
 
-  views.playbackControls.mount(document.getElementById('controls'))
-  views.browser.mount(document.getElementById('main'))
+  views.playbackControls.mount document.getElementById('controls')
+  views.browser.mount document.getElementById('main')
 , false

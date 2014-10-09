@@ -60,17 +60,27 @@ clickHandler = (event) ->
   link = event.target
   link = link.parentNode until !link.parentNode or link.nodeName is 'A'
 
+  # Clicked element was not a link.
   return unless link.nodeName is 'A'
 
+  # The link points to a different origin. Ignore it.
   unless link.origin is document.location.origin
     return
 
+  # @todo Check the target of the link.
+
   event.preventDefault()
 
-  state = {
+  state =
+    hash: link.hash
+    host: link.host
+    hostname: link.hostname
     href: link.href
+    origin: link.origin
     pathname: link.pathname
-  }
+    port: link.port
+    protocol: link.protocol
+    search: link.search
 
   history.pushState(state, '', link.href)
   document.dispatchEvent(new CustomEvent('navigation:page',
@@ -95,7 +105,14 @@ setTimeout ->
 setTimeout ->
   document.dispatchEvent(new CustomEvent('navigation:page',
     detail:
+      hash: document.location.hash
+      host: document.location.host
+      hostname: document.location.hostname
       href: document.location.href
+      origin: document.location.origin
       pathname: document.location.pathname
+      port: document.location.port
+      protocol: document.location.protocol
+      search: document.location.search
   ))
 , 0
