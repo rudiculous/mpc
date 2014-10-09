@@ -272,6 +272,76 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "depth": 3,
               "children": [
                 {
+                  "type": "folder",
+                  "data": {
+                    "path": "app/assets/stylesheets/blocks",
+                    "title": "blocks"
+                  },
+                  "depth": 4,
+                  "children": [
+                    {
+                      "type": "file",
+                      "data": {
+                        "language": {
+                          "nameMatchers": [".less"],
+                          "pygmentsLexer": "sass",
+                          "highlightJS": "scss",
+                          "singleLineComment": ["//"],
+                          "ignorePrefix": "}",
+                          "foldPrefix": "^",
+                          "name": "LESS"
+                        },
+                        "sourcePath": "/home/rj/webapps/mpc/app/assets/stylesheets/blocks/controls.less",
+                        "projectPath": "app/assets/stylesheets/blocks/controls.less",
+                        "targetPath": "app/assets/stylesheets/blocks/controls",
+                        "pageTitle": "app/assets/stylesheets/blocks/controls",
+                        "title": "controls"
+                      },
+                      "depth": 5,
+                      "outline": []
+                    }, {
+                      "type": "file",
+                      "data": {
+                        "language": {
+                          "nameMatchers": [".less"],
+                          "pygmentsLexer": "sass",
+                          "highlightJS": "scss",
+                          "singleLineComment": ["//"],
+                          "ignorePrefix": "}",
+                          "foldPrefix": "^",
+                          "name": "LESS"
+                        },
+                        "sourcePath": "/home/rj/webapps/mpc/app/assets/stylesheets/blocks/main.less",
+                        "projectPath": "app/assets/stylesheets/blocks/main.less",
+                        "targetPath": "app/assets/stylesheets/blocks/main",
+                        "pageTitle": "app/assets/stylesheets/blocks/main",
+                        "title": "main"
+                      },
+                      "depth": 5,
+                      "outline": []
+                    }, {
+                      "type": "file",
+                      "data": {
+                        "language": {
+                          "nameMatchers": [".less"],
+                          "pygmentsLexer": "sass",
+                          "highlightJS": "scss",
+                          "singleLineComment": ["//"],
+                          "ignorePrefix": "}",
+                          "foldPrefix": "^",
+                          "name": "LESS"
+                        },
+                        "sourcePath": "/home/rj/webapps/mpc/app/assets/stylesheets/blocks/navigation.less",
+                        "projectPath": "app/assets/stylesheets/blocks/navigation.less",
+                        "targetPath": "app/assets/stylesheets/blocks/navigation",
+                        "pageTitle": "app/assets/stylesheets/blocks/navigation",
+                        "title": "navigation"
+                      },
+                      "depth": 5,
+                      "outline": []
+                    }
+                  ]
+                }, {
                   "type": "file",
                   "data": {
                     "language": {

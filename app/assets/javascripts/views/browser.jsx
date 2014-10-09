@@ -9,7 +9,9 @@
     components.Browser = React.createClass({
         render: function() {
             return (
-                <div className='music-browser' />
+                <div className='music-browser'>
+                    <h1>Browser</h1>
+                </div>
             );
         }
     });

@@ -140,7 +140,9 @@
         render: function() {
             return (
                 <div className="controls-player">
-                    {this.state.Artist} - {this.state.Title}
+                    <a href="/now_playing" id="currentsong" data-pos={this.state.Pos}>
+                        {this.state.Artist} - {this.state.Title}
+                    </a>
                 </div>
             );
         }
@@ -151,10 +153,6 @@
             <div className="controls-container">
                 <components.Controls />
                 <components.Player />
-                <a href="/browser/the_doors/2007_very_best_of">My link</a><br />
-                <a href="http://www.google.com">Google.com</a><br />
-                <a href="//192.168.0.129:3001/now_playing">Now playing</a><br />
-                <a href="//192.168.0.129/more_info">More info</a><br />
             </div>,
             where
         );
