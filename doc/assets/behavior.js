@@ -103,6 +103,254 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
     }, {
       "type": "folder",
       "data": {
+        "path": "app",
+        "title": "app"
+      },
+      "depth": 1,
+      "children": [
+        {
+          "type": "folder",
+          "data": {
+            "path": "app/assets",
+            "title": "assets"
+          },
+          "depth": 2,
+          "children": [
+            {
+              "type": "folder",
+              "data": {
+                "path": "app/assets/javascripts",
+                "title": "javascripts"
+              },
+              "depth": 3,
+              "children": [
+                {
+                  "type": "file",
+                  "data": {
+                    "language": {
+                      "nameMatchers": [".coffee", "Cakefile"],
+                      "pygmentsLexer": "coffee-script",
+                      "highlightJS": "coffeescript",
+                      "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                      "strictMultiLineEnd": false,
+                      "singleLineComment": ["#"],
+                      "ignorePrefix": "}",
+                      "foldPrefix": "^",
+                      "name": "CoffeeScript"
+                    },
+                    "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/main.coffee",
+                    "projectPath": "app/assets/javascripts/main.coffee",
+                    "targetPath": "app/assets/javascripts/main",
+                    "pageTitle": "app/assets/javascripts/main",
+                    "title": "main"
+                  },
+                  "depth": 4,
+                  "outline": []
+                }, {
+                  "type": "file",
+                  "data": {
+                    "language": {
+                      "nameMatchers": [".coffee", "Cakefile"],
+                      "pygmentsLexer": "coffee-script",
+                      "highlightJS": "coffeescript",
+                      "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                      "strictMultiLineEnd": false,
+                      "singleLineComment": ["#"],
+                      "ignorePrefix": "}",
+                      "foldPrefix": "^",
+                      "name": "CoffeeScript"
+                    },
+                    "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/router.coffee",
+                    "projectPath": "app/assets/javascripts/router.coffee",
+                    "targetPath": "app/assets/javascripts/router",
+                    "pageTitle": "app/assets/javascripts/router",
+                    "title": "router"
+                  },
+                  "depth": 4,
+                  "outline": []
+                }
+              ]
+            }, {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".json"],
+                  "pygmentsLexer": "json",
+                  "codeOnly": true,
+                  "name": "JSON"
+                },
+                "sourcePath": "/home/rj/webapps/mpc/app/assets/manifest.json",
+                "projectPath": "app/assets/manifest.json",
+                "targetPath": "app/assets/manifest",
+                "pageTitle": "app/assets/manifest",
+                "title": "manifest"
+              },
+              "depth": 3,
+              "outline": []
+            }, {
+              "type": "folder",
+              "data": {
+                "path": "app/assets/stylesheets",
+                "title": "stylesheets"
+              },
+              "depth": 3,
+              "children": [
+                {
+                  "type": "file",
+                  "data": {
+                    "language": {
+                      "nameMatchers": [".less"],
+                      "pygmentsLexer": "sass",
+                      "highlightJS": "scss",
+                      "singleLineComment": ["//"],
+                      "ignorePrefix": "}",
+                      "foldPrefix": "^",
+                      "name": "LESS"
+                    },
+                    "sourcePath": "/home/rj/webapps/mpc/app/assets/stylesheets/main.less",
+                    "projectPath": "app/assets/stylesheets/main.less",
+                    "targetPath": "app/assets/stylesheets/main",
+                    "pageTitle": "app/assets/stylesheets/main",
+                    "title": "main"
+                  },
+                  "depth": 4,
+                  "outline": []
+                }
+              ]
+            }
+          ]
+        }, {
+          "type": "file",
+          "data": {
+            "language": {
+              "nameMatchers": [".js"],
+              "pygmentsLexer": "javascript",
+              "multiLineComment": ["/*", "*", "*/"],
+              "singleLineComment": ["//"],
+              "ignorePrefix": "}",
+              "foldPrefix": "^",
+              "name": "JavaScript"
+            },
+            "sourcePath": "/home/rj/webapps/mpc/app/bootstrap.js",
+            "projectPath": "app/bootstrap.js",
+            "targetPath": "app/bootstrap",
+            "pageTitle": "app/bootstrap",
+            "title": "bootstrap"
+          },
+          "depth": 2,
+          "outline": []
+        }, {
+          "type": "folder",
+          "data": {
+            "path": "app/core",
+            "title": "core"
+          },
+          "depth": 2,
+          "children": [
+            {
+              "type": "file",
+              "data": {
+                "language": {
+                  "nameMatchers": [".js"],
+                  "pygmentsLexer": "javascript",
+                  "multiLineComment": ["/*", "*", "*/"],
+                  "singleLineComment": ["//"],
+                  "ignorePrefix": "}",
+                  "foldPrefix": "^",
+                  "name": "JavaScript"
+                },
+                "sourcePath": "/home/rj/webapps/mpc/app/core/app.js",
+                "projectPath": "app/core/app.js",
+                "targetPath": "app/core/app",
+                "pageTitle": "app/core/app",
+                "title": "app"
+              },
+              "depth": 3,
+              "outline": [
+                {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "Dependencies",
+                    "slug": "dependencies"
+                  },
+                  "depth": 1
+                }, {
+                  "type": "heading",
+                  "data": {
+                    "level": 1,
+                    "title": "Initialization",
+                    "slug": "initialization"
+                  },
+                  "depth": 1,
+                  "children": [
+                    {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Template engine",
+                        "slug": "template-engine"
+                      },
+                      "depth": 2
+                    }, {
+                      "type": "heading",
+                      "data": {
+                        "level": 2,
+                        "title": "Assets",
+                        "slug": "assets"
+                      },
+                      "depth": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }, {
+          "type": "file",
+          "data": {
+            "language": {
+              "nameMatchers": [".js"],
+              "pygmentsLexer": "javascript",
+              "multiLineComment": ["/*", "*", "*/"],
+              "singleLineComment": ["//"],
+              "ignorePrefix": "}",
+              "foldPrefix": "^",
+              "name": "JavaScript"
+            },
+            "sourcePath": "/home/rj/webapps/mpc/app/index.js",
+            "projectPath": "app/index.js",
+            "targetPath": "app/index",
+            "pageTitle": "app/index",
+            "title": "index"
+          },
+          "depth": 2,
+          "outline": []
+        }, {
+          "type": "file",
+          "data": {
+            "language": {
+              "nameMatchers": [".js"],
+              "pygmentsLexer": "javascript",
+              "multiLineComment": ["/*", "*", "*/"],
+              "singleLineComment": ["//"],
+              "ignorePrefix": "}",
+              "foldPrefix": "^",
+              "name": "JavaScript"
+            },
+            "sourcePath": "/home/rj/webapps/mpc/app/routes.js",
+            "projectPath": "app/routes.js",
+            "targetPath": "app/routes",
+            "pageTitle": "app/routes",
+            "title": "routes"
+          },
+          "depth": 2,
+          "outline": []
+        }
+      ]
+    }, {
+      "type": "folder",
+      "data": {
         "path": "lib",
         "title": "lib"
       },

@@ -84,7 +84,7 @@ document.addEventListener 'click', attachClickHandler, true
 # Delay execution of function long enough to miss the popstate event
 # that is fired by some browsers on the initial page load.
 #
-# @todo: Is this (still) necessary?
+# @todo Is this (still) necessary?
 setTimeout ->
   window.addEventListener 'popstate', (event) ->
     document.dispatchEvent(new CustomEvent('navigation:page',

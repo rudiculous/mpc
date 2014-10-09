@@ -1,6 +1,7 @@
 {
     "glob": [
         "README.md",
+        "app/**",
         "lib/**",
         "tasks/**"
     ],

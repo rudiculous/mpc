@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><head><title>app/assets/javascripts/main</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../"><meta name="groc-document-path" content="app/assets/javascripts/main"><meta name="groc-project-path" content="app/assets/javascripts/main.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../../assets/style.css"><script type="text/javascript" src="../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">app/assets/javascripts/main.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-string">"use strict"</span>
+
+socket = io()
+app = {}
+
+<span class="hljs-built_in">window</span>.MPD_APP = app</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Sends data to the server and waits for a response.</p></div></div><div class="code"><div class="wrapper">app.<span class="hljs-function"><span class="hljs-title">mpd</span> = <span class="hljs-params">(command, args, callback)</span> -&gt;</span>
+  last = arguments.length - <span class="hljs-number">1</span>
+
+  <span class="hljs-keyword">if</span> arguments.length &lt; <span class="hljs-number">2</span>
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'mpd() called with too few arguments.'</span>)
+
+  <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span>(arguments[last]) <span class="hljs-keyword">isnt</span> <span class="hljs-string">'function'</span>
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'Last argument to mpd() should be a callback.'</span>)
+
+  command = arguments[<span class="hljs-number">0</span>]
+  args = Array.prototype.slice.call(arguments, <span class="hljs-number">1</span>, last)
+  callback = arguments[last]
+
+  socket.emit <span class="hljs-string">'mpd:command'</span>,
+    <span class="hljs-attribute">command</span>: command
+    <span class="hljs-attribute">args</span>: args
+  , callback
+
+  <span class="hljs-keyword">return</span>
+
+app.views = {}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Dispatch events when something has changed.</p></div></div><div class="code"><div class="wrapper">socket.<span class="hljs-literal">on</span> <span class="hljs-string">'mpd:changed'</span>, <span class="hljs-function"><span class="hljs-params">(what)</span> -&gt;</span>
+  <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'mpd:changed'</span>,
+    <span class="hljs-attribute">what</span>: what
+  ))
+
+  <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'mpd:changed:'</span> + what))
+
+  <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Catch navigation events.
+Loosely based on <a href="https://github.com/rails/turbolinks">turbolinks</a></p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-title">attachClickHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+  <span class="hljs-keyword">unless</span> event.defaultPrevented
+    <span class="hljs-built_in">document</span>.removeEventListener <span class="hljs-string">'click'</span>, clickHandler, <span class="hljs-literal">false</span>
+    <span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'click'</span>, clickHandler, <span class="hljs-literal">false</span>
+
+  <span class="hljs-keyword">return</span>
+
+<span class="hljs-function"><span class="hljs-title">clickHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> event.defaultPrevented <span class="hljs-keyword">or</span> <span class="hljs-comment"># event was cancelled</span>
+    event.which &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">or</span> <span class="hljs-comment"># different button than the left mouse</span>
+    event.metaKey <span class="hljs-keyword">or</span> <span class="hljs-comment"># modifier key was clicked</span>
+    event.ctrlKey <span class="hljs-keyword">or</span>
+    event.shiftKey <span class="hljs-keyword">or</span>
+    event.altKey
+
+  link = event.target
+  link = link.parentNode <span class="hljs-keyword">until</span> !link.parentNode <span class="hljs-keyword">or</span> link.nodeName <span class="hljs-keyword">is</span> <span class="hljs-string">'A'</span>
+
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> link.nodeName <span class="hljs-keyword">is</span> <span class="hljs-string">'A'</span>
+
+  <span class="hljs-keyword">unless</span> link.origin <span class="hljs-keyword">is</span> <span class="hljs-built_in">document</span>.location.origin
+    <span class="hljs-keyword">return</span>
+
+  event.preventDefault()
+
+  state = {
+    <span class="hljs-attribute">href</span>: link.href
+    <span class="hljs-attribute">pathname</span>: link.pathname
+  }
+
+  history.pushState(state, <span class="hljs-string">''</span>, link.href)
+  <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>,
+    <span class="hljs-attribute">detail</span>: state
+  ))
+
+  <span class="hljs-keyword">return</span>
+
+<span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'click'</span>, attachClickHandler, <span class="hljs-literal">true</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Delay execution of function long enough to miss the popstate event
+that is fired by some browsers on the initial page load.</p>
+<p>TODO: Is this (still) necessary?</p></div></div><div class="code"><div class="wrapper">setTimeout<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-built_in">window</span>.addEventListener <span class="hljs-string">'popstate'</span>, <span class="hljs-function"><span class="hljs-params">(event)</span> -&gt;</span>
+    <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>,
+      <span class="hljs-attribute">detail</span>: event.state
+    ))
+, <span class="hljs-number">500</span>
+
+setTimeout<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>,
+    <span class="hljs-attribute">detail</span>:
+      <span class="hljs-attribute">href</span>: <span class="hljs-built_in">document</span>.location.href
+      <span class="hljs-attribute">pathname</span>: <span class="hljs-built_in">document</span>.location.pathname
+  ))
+, <span class="hljs-number">0</span></div></div></div></div></body></html>
