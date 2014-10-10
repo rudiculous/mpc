@@ -177,7 +177,7 @@ left, the <code>idle</code> command is sent.</p>
 
     <span class="hljs-keyword">var</span> item = queue.shift();
 
-    <span class="hljs-keyword">if</span> (!item) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>No item?</p></div></div><div class="code"><div class="wrapper">        console.error(<span class="hljs-string">'Empty item was pushed onto the queue!'</span>);
+    <span class="hljs-keyword">if</span> (!item) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>No item?</p></div></div><div class="code"><div class="wrapper">        console.trace(<span class="hljs-string">'Empty item was pushed onto the queue!'</span>, item);
         done();
     }
 

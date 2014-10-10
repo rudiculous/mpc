@@ -44,13 +44,23 @@ window.APP_LIB.router = (where) ->
 
 
 # Creates a route.
-window.APP_LIB.route = (paths, action) ->
-  if !Array.isArray(paths)
-    paths = [paths]
+#
+# @example
+#     route('/path')                -> myFancyAction2
+#     route(['/path-1', '/path-2']) -> myFancyAction2
+#
+# @param {String|Array} paths
+# @param {Function} getAction
+window.APP_LIB.route = (paths) ->
+  (getAction) ->
+    action = getAction()
 
-  for path in paths
-    routes.push(new Route(path, action))
+    if !Array.isArray(paths)
+      paths = [paths]
 
-  return
+    for path in paths
+      routes.push(new Route(path, action))
+
+    return
 
 # vim: set ft=coffee:
