@@ -3,10 +3,18 @@
   "title": "Music Player Client",
   "description": "A web client for MPD.",
   "version": "0.1.0",
+  "homepage": "https://github.com/rudiculous/mpc",
   "author": {
     "name": "RJ van der Weide",
     "email": "rj@rudiculous.net",
     "url": "http://rdcl.nl"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rudiculous/mpc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rudiculous/mpc/issues"
   },
   "license": "MIT",
   "dependencies": {
