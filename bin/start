@@ -1,0 +1,4 @@
+#!/bin/bash
+cd "$( dirname "${BASH_SOURCE[0]}" )" && . ./env
+
+forever --append -o "var/log/$ENVIRONMENT.out.log" -e "var/log/$ENVIRONMENT.err.log" start "$PROJECTDIR/server.js"

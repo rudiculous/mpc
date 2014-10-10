@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# configure bash
+set -e
+shopt -s expand_aliases
+
+
+# go to the correct dir
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECTDIR="${SCRIPT_DIR:0:$((${#SCRIPT_DIR}-4))}"
+cd $PROJECTDIR
+
+
+# set globals
+if [ -z "$ENVIRONMENT" ]; then
+    ENVIRONMENT=development
+fi
+
+
+# aliases
+alias forever="./node_modules/.bin/forever --pidFile $PROJECTDIR/var/forever.pid"
