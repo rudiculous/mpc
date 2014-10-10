@@ -46,8 +46,8 @@
         render: function() {
             return (
                 <div className='navigation-menu'>
-                    <components.Item href='/now_playing' label='Now Playing' key='now_playing' />
-                    <components.Item href='/browser'     label='Browser'     key='browser'     />
+                    <components.Item href='/now_playing'  label='Now Playing'  key='now_playing'  />
+                    <components.Item href='/file_browser' label='File Browser' key='file_browser' />
                 </div>
             );
         }
