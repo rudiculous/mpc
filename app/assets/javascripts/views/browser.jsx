@@ -4,6 +4,7 @@
     "use strict";
 
     var components = {};
+    var updateState = window.MPD_APP.updateState;
     window.MPD_APP.views.browser = components;
 
     components.Browser = React.createClass({
@@ -21,5 +22,9 @@
             <components.Browser />,
             where
         );
+
+        updateState({
+            'activeTab': 'browser'
+        });
     };
 }());

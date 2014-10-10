@@ -4,6 +4,7 @@
     "use strict";
 
     var components = {};
+    var updateState = window.MPD_APP.updateState;
     window.MPD_APP.views.routeNotFound = components;
 
     components.RouteNotFound = React.createClass({
@@ -21,5 +22,9 @@
             <components.RouteNotFound />,
             where
         );
+
+        updateState({
+            'activeTab': null
+        });
     };
 }());

@@ -103,6 +103,7 @@ clickHandler = (event) ->
 
   history.pushState(state, '', link.href)
   document.dispatchEvent(new CustomEvent('navigation:page'))
+  document.dispatchEvent(new CustomEvent('state:updated'))
 
   return
 
@@ -115,6 +116,7 @@ document.addEventListener 'click', attachClickHandler, true
 setTimeout ->
   window.addEventListener 'popstate', (event) ->
     document.dispatchEvent(new CustomEvent('navigation:page'))
+    document.dispatchEvent(new CustomEvent('state:updated'))
 , 500
 
 setTimeout ->
@@ -137,6 +139,22 @@ setTimeout ->
     history.replaceState(state, '', document.location.href)
 
   document.dispatchEvent(new CustomEvent('navigation:page'))
+  document.dispatchEvent(new CustomEvent('state:updated'))
 , 0
+
+
+# Updates the global state.
+app.updateState = (newState) ->
+  state = history.state
+
+  for key, val of newState
+    if val is null
+      delete state[key]
+    else
+      state[key] = val
+
+  history.replaceState(state, '', document.location.href)
+
+  document.dispatchEvent(new CustomEvent('state:updated'))
 
 # vim: set ft=coffee:

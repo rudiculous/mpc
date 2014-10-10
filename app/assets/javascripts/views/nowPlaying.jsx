@@ -4,6 +4,7 @@
     "use strict";
 
     var components = {};
+    var updateState = window.MPD_APP.updateState;
     var formatTime = window.APP_LIB.formatTime;
     window.MPD_APP.views.nowPlaying = components;
 
@@ -147,6 +148,9 @@
             <components.NowPlaying />,
             where
         );
+
+        updateState({
+            'activeTab': 'now_playing'
+        });
     };
 }());
-
