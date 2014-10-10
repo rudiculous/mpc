@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    'secret': SECRET,
+    'secret': process.env.SECRET,
     'server': {
         'host': process.env.HOST || '127.0.0.1',
         'port': process.env.PORT,
