@@ -41,10 +41,19 @@
             };
         },
 
+        cleanUpHandlers: function() {
+            if (this.__mpdChangedHandler) {
+                document.removeEventListener('mpd:changed', this.__mpdChangedHandler);
+                delete this.__mpdChangedHandler;
+            }
+        },
+
         componentDidMount: function() {
             var self = this;
 
-            document.addEventListener('mpd:changed', function(event) {
+            this.cleanUpHandlers();
+
+            this.__mpdChangedHandler = function(event) {
                 var what = null;
 
                 if (event.detail) {
@@ -54,7 +63,13 @@
                 if (what === 'player' || what === 'playlist') {
                     self.fetchAndSetState();
                 }
-            }, false);
+            };
+
+            document.addEventListener('mpd:changed', this.__mpdChangedHandler, false);
+        },
+
+        componentWillUnmount: function() {
+            this.cleanUpHandlers();
         },
 
         fetchAndSetState: function() {
