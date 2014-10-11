@@ -43,10 +43,12 @@ components.Controls = React.createClass
     setInterval ->
       return unless self.state.state is 'play'
 
-      if self.state.progress && self.state.progress.elapsed
+      if self.state.progress
+        elapsed = self.state.progress.elapsed || 0
+
         self.setState
           progress:
-            elapsed: self.state.progress.elapsed + 1
+            elapsed: elapsed + 1
             duration: self.state.progress.duration
     , 1000
 
