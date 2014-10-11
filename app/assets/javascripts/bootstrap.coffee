@@ -7,7 +7,7 @@
 
 {views, blocks} = window.MPD_APP
 
-views.playbackControls.mount blocks.controls
+views.controls.mount blocks.controls
 views.navigation.mount blocks.navigation
 
 # vim: set ft=coffee:

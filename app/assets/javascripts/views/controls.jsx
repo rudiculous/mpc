@@ -17,7 +17,7 @@
     var progressUpdater = null;
     var progressInterval = 15000;
 
-    window.MPD_APP.views.playbackControls = components;
+    window.MPD_APP.views.controls = components;
 
     components.PlaybackButton = React.createClass({
         action: function(event) {
