@@ -18,7 +18,7 @@ window.APP_LIB ||= {}
 # @param {String} data The response from MPD.
 # @param {null|Array|Object} [split=null]
 # @param {String} [sep=': '] Separates key-values.
-# @returns {Object|Array} Returns either the parsed data of an array of
+# @returns {Object|Array} Returns either the parsed data or an array of
 # parsed segments.
 window.APP_LIB.parseMPDResponse = (data, split = null, sep = ': ') ->
   entries = []
