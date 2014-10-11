@@ -19,14 +19,11 @@
                 lastSegment = segments[segments.length - 1];
 
             return (
-                <tr onContextMenu={this.contextMenu}>
-                    <td colSpan='3'>
-                        <a href={'/file_browser?pathName=' + encodeURIComponent(this.props.entry.directory)}>
-                            {lastSegment}
-                        </a>
-                    </td>
-                    <td />
-                </tr>
+                <li onContextMenu={this.contextMenu} className='list-group-item'>
+                    <a href={'/file_browser?pathName=' + encodeURIComponent(this.props.entry.directory)}>
+                        {lastSegment}
+                    </a>
+                </li>
             );
         }
     });
@@ -49,7 +46,10 @@
             this.fetchAndSetState();
 
             return {
-                entries: []
+                loading: true,
+                entries: [],
+                files: [],
+                directories: []
             };
         },
 
@@ -60,15 +60,26 @@
                 var count = 0, data = {};
 
                 if (err) {
+                    self.setState({
+                        loading: false,
+                        error: err
+                    });
                     return console.error(err);
                 }
 
+                data.directories = [];
+                data.files = [];
+
                 data.entries = parseMPDResponse(playlistinfo, {
                     'file': function(entry) {
-                        return <components.File entry={entry} key={count++} />;
+                        var file = <components.File entry={entry} key={count++} />;
+                        data.files.push(file);
+                        return file;
                     },
                     'directory': function(entry) {
-                        return <components.Directory entry={entry} key={count++} />;
+                        var directory = <components.Directory entry={entry} key={count++} />;
+                        data.directories.push(directory);
+                        return directory;
                     }
                 });
 
@@ -81,7 +92,9 @@
                 pathName = this.props.pathName,
                 pathSoFar = '',
                 crumbCount = 0,
-                segments, i, segment;
+                segments, i, segment,
+                files,
+                directories = '';
 
             if (pathName) {
                 crumbs.push(
@@ -115,35 +128,85 @@
                 );
             }
 
-            return (
-                <div className='music-file-browser'>
-                    <h1>File Browser</h1>
+            if (this.state.loading) {
+                return (
+                    <div className='music-file-browser'>
+                        <h1>File Browser</h1>
 
-                    <ol className='breadcrumb'>
-                        {crumbs}
-                    </ol>
+                        <ol className='breadcrumb'>{crumbs}</ol>
 
-                    <table className='playlist table table-striped table-condensed table-hover'>
-                        <col style={{width: '400px'}} />
-                        <col style={{width: '50px'}} />
-                        <col />
-                        <col style={{width: '70px'}} />
+                        <div className='alert alert-info'>Loading&hellip;</div>
+                    </div>
+                );
+            }
+            else if (this.state.error) {
+                return (
+                    <div className='music-file-browser'>
+                        <h1>File Browser</h1>
 
-                        <thead>
-                            <th>Artist - Album</th>
-                            <th>Track</th>
-                            <th>Title</th>
-                            <th>Duration</th>
-                        </thead>
+                        <ol className='breadcrumb'>{crumbs}</ol>
 
-                        <tfoot />
+                        <div className='alert alert-danger'>
+                            <strong>An error occurred!</strong>
+                            <pre>
+                                {this.state.error}
+                            </pre>
+                        </div>
+                    </div>
+                );
+            }
+            else {
+                if (this.state.directories.length) {
+                    directories = (
+                        <div>
+                            <h2>Directories</h2>
+                            <ul className='list-group'>
+                                {this.state.directories}
+                            </ul>
+                        </div>
+                    );
+                }
 
-                        <tbody>
-                            {this.state.entries}
-                        </tbody>
-                    </table>
-                </div>
-            );
+                if (this.state.files.length) {
+                    files = (
+                        <table className='playlist table table-striped table-condensed table-hover'>
+                            <col style={{width: '400px'}} />
+                            <col style={{width: '50px'}} />
+                            <col />
+                            <col style={{width: '70px'}} />
+
+                            <thead>
+                                <th>Artist - Album</th>
+                                <th>Track</th>
+                                <th>Title</th>
+                                <th>Duration</th>
+                            </thead>
+
+                            <tfoot />
+
+                            <tbody>
+                                {this.state.files}
+                            </tbody>
+                        </table>
+                    );
+                }
+                else {
+                    files = <p>No files found.</p>;
+                }
+
+                return (
+                    <div className='music-file-browser'>
+                        <h1>File Browser</h1>
+
+                        <ol className='breadcrumb'>{crumbs}</ol>
+
+                        {directories}
+
+                        <h2>Files</h2>
+                        {files}
+                    </div>
+                );
+            }
         }
     });
 
