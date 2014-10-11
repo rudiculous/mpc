@@ -12,6 +12,17 @@ app = {}
 
 window.MPD_APP = app
 
+baseTitle = document.title
+
+Object.defineProperty app, 'title',
+  get: -> document.head.title
+  set: (newTitle) ->
+    document.title =
+      if newTitle
+        newTitle + ' | ' + baseTitle
+      else
+        baseTitle
+
 # Sends data to the server and waits for a response.
 app.mpd = (command, args, callback) ->
   last = arguments.length - 1

@@ -129,13 +129,14 @@
     });
 
     components.mount = function(where, req) {
+        updateState({
+            'activeTab': 'now_playing'
+        });
+        window.MPD_APP.title = 'Now Playing';
+
         React.renderComponent(
             <components.NowPlaying />,
             where
         );
-
-        updateState({
-            'activeTab': 'now_playing'
-        });
     };
 }());

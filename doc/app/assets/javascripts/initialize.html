@@ -7,7 +7,18 @@
 </ul></div></div><div class="code"><div class="wrapper">socket = io()
 app = {}
 
-<span class="hljs-built_in">window</span>.MPD_APP = app</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Sends data to the server and waits for a response.</p></div></div><div class="code"><div class="wrapper">app.<span class="hljs-function"><span class="hljs-title">mpd</span> = <span class="hljs-params">(command, args, callback)</span> -&gt;</span>
+<span class="hljs-built_in">window</span>.MPD_APP = app
+
+baseTitle = <span class="hljs-built_in">document</span>.title
+
+Object.defineProperty app, <span class="hljs-string">'title'</span>,
+  <span class="hljs-attribute">get</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-built_in">document</span>.head.title
+  <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(newTitle)</span> -&gt;</span>
+    <span class="hljs-built_in">document</span>.title =
+      <span class="hljs-keyword">if</span> newTitle
+        newTitle + <span class="hljs-string">' | '</span> + baseTitle
+      <span class="hljs-keyword">else</span>
+        baseTitle</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Sends data to the server and waits for a response.</p></div></div><div class="code"><div class="wrapper">app.<span class="hljs-function"><span class="hljs-title">mpd</span> = <span class="hljs-params">(command, args, callback)</span> -&gt;</span>
   last = arguments.length - <span class="hljs-number">1</span>
 
   <span class="hljs-keyword">if</span> arguments.length &lt; <span class="hljs-number">2</span>

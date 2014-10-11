@@ -157,13 +157,14 @@
             pathName = '';
         }
 
+        updateState({
+            'activeTab': 'file_browser'
+        });
+        window.MPD_APP.title = pathName + ' | File Browser';
+
         React.renderComponent(
             <components.FileBrowser pathName={pathName} />,
             where
         );
-
-        updateState({
-            'activeTab': 'file_browser'
-        });
     };
 }());

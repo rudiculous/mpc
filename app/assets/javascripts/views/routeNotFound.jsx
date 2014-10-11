@@ -12,19 +12,28 @@
             return (
                 <div className='route-not-found'>
                     <h1>Not Found</h1>
+
+                    <p>
+                        The URL you are trying to call was not found.
+                    </p>
+
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                    </ul>
                 </div>
             );
         }
     });
 
     components.mount = function(where, req) {
+        updateState({
+            'activeTab': null
+        });
+        window.MPD_APP.title = 'Not Found';
+
         React.renderComponent(
             <components.RouteNotFound />,
             where
         );
-
-        updateState({
-            'activeTab': null
-        });
     };
 }());
