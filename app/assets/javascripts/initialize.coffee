@@ -12,8 +12,9 @@ app = {}
 
 window.MPD_APP = app
 
-baseTitle = document.title
 
+# Allows you to se the title of the page.
+baseTitle = document.title
 Object.defineProperty app, 'title',
   get: -> document.head.title
   set: (newTitle) ->
@@ -22,6 +23,7 @@ Object.defineProperty app, 'title',
         newTitle + ' | ' + baseTitle
       else
         baseTitle
+
 
 # Sends data to the server and waits for a response.
 app.mpd = (command, args, callback) ->
@@ -146,6 +148,8 @@ setTimeout ->
         port: document.location.port
         protocol: document.location.protocol
         search: document.location.search
+      title: app.title
+      activeTab: null
 
     history.replaceState(state, '', document.location.href)
 
@@ -157,6 +161,10 @@ setTimeout ->
 # Updates the global state.
 app.updateState = (newState) ->
   state = history.state
+
+  if 'title' of newState
+    app.title = newState.title
+    newState.title = app.title
 
   for key, val of newState
     if val is null

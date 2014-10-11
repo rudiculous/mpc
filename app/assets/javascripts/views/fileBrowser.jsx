@@ -158,9 +158,9 @@
         }
 
         updateState({
-            'activeTab': 'file_browser'
+            'activeTab': 'file_browser',
+            'title': 'File Browser'
         });
-        window.MPD_APP.title = pathName + ' | File Browser';
 
         React.renderComponent(
             <components.FileBrowser pathName={pathName} />,

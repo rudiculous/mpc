@@ -27,9 +27,9 @@
 
     components.mount = function(where, req) {
         updateState({
-            'activeTab': null
+            'activeTab': null,
+            'title': 'Not Found'
         });
-        window.MPD_APP.title = 'Not Found';
 
         React.renderComponent(
             <components.RouteNotFound />,

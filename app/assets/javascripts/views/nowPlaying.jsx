@@ -130,9 +130,9 @@
 
     components.mount = function(where, req) {
         updateState({
-            'activeTab': 'now_playing'
+            'activeTab': 'now_playing',
+            'title': 'Now Playing'
         });
-        window.MPD_APP.title = 'Now Playing';
 
         React.renderComponent(
             <components.NowPlaying />,

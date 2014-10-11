@@ -7,10 +7,7 @@
 </ul></div></div><div class="code"><div class="wrapper">socket = io()
 app = {}
 
-<span class="hljs-built_in">window</span>.MPD_APP = app
-
-baseTitle = <span class="hljs-built_in">document</span>.title
-
+<span class="hljs-built_in">window</span>.MPD_APP = app</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Allows you to se the title of the page.</p></div></div><div class="code"><div class="wrapper">baseTitle = <span class="hljs-built_in">document</span>.title
 Object.defineProperty app, <span class="hljs-string">'title'</span>,
   <span class="hljs-attribute">get</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-built_in">document</span>.head.title
   <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(newTitle)</span> -&gt;</span>
@@ -111,6 +108,8 @@ setTimeout<span class="hljs-function"> -&gt;</span>
         <span class="hljs-attribute">port</span>: <span class="hljs-built_in">document</span>.location.port
         <span class="hljs-attribute">protocol</span>: <span class="hljs-built_in">document</span>.location.protocol
         <span class="hljs-attribute">search</span>: <span class="hljs-built_in">document</span>.location.search
+      <span class="hljs-attribute">title</span>: app.title
+      <span class="hljs-attribute">activeTab</span>: <span class="hljs-literal">null</span>
 
     history.replaceState(state, <span class="hljs-string">''</span>, <span class="hljs-built_in">document</span>.location.href)
 
@@ -118,6 +117,10 @@ setTimeout<span class="hljs-function"> -&gt;</span>
   <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'state:updated'</span>))
 , <span class="hljs-number">0</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Updates the global state.</p></div></div><div class="code"><div class="wrapper">app.<span class="hljs-function"><span class="hljs-title">updateState</span> = <span class="hljs-params">(newState)</span> -&gt;</span>
   state = history.state
+
+  <span class="hljs-keyword">if</span> <span class="hljs-string">'title'</span> <span class="hljs-keyword">of</span> newState
+    app.title = newState.title
+    newState.title = app.title
 
   <span class="hljs-keyword">for</span> key, val <span class="hljs-keyword">of</span> newState
     <span class="hljs-keyword">if</span> val <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
