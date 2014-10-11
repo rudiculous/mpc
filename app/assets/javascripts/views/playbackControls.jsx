@@ -5,6 +5,7 @@
 
     var components = {};
     var formatTime = window.APP_LIB.formatTime;
+    var parseMPDResponse = window.APP_LIB.parseMPDResponse;
 
     /**
      * In order to keep the progress bar of the player up to date, we
@@ -82,23 +83,13 @@
             }
 
             window.MPD_APP.mpd('status', function(err, status) {
-                var data = {},
-                    lines, i, line, index, key, val, elapsed, duration;
+                var data;
 
                 if (err) {
                     return console.error(err);
                 }
 
-                lines = status.split('\n');
-                for (i = 0; i < lines.length; i++) {
-                    line = lines[i];
-                    index = line.indexOf(': ');
-                    if (index > -1) {
-                        key = line.substring(0, index);
-                        val = line.substring(index + 2);
-                        data[key] = val;
-                    }
-                }
+                data = parseMPDResponse(status);
 
                 data.progress = {};
                 if (data.time) {
@@ -179,25 +170,11 @@
             var self = this;
 
             window.MPD_APP.mpd('currentsong', function(err, currentsong) {
-                var data = {},
-                    lines, i, line, index, key, val;
-
                 if (err) {
                     return console.error(err);
                 }
 
-                lines = currentsong.split('\n');
-                for (i = 0; i < lines.length; i++) {
-                    line = lines[i];
-                    index = line.indexOf(': ');
-                    if (index > -1) {
-                        key = line.substring(0, index);
-                        val = line.substring(index + 2);
-                        data[key] = val;
-                    }
-                }
-
-                self.replaceState(data);
+                self.replaceState(parseMPDResponse(currentsong));
             });
         },
 

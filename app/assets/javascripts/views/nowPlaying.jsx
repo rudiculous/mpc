@@ -6,6 +6,7 @@
     var components = {};
     var updateState = window.MPD_APP.updateState;
     var formatTime = window.APP_LIB.formatTime;
+    var parseMPDResponse = window.APP_LIB.parseMPDResponse;
     window.MPD_APP.views.nowPlaying = components;
 
     components.SingleEntry = React.createClass({
@@ -78,51 +79,20 @@
             var currentsong = document.getElementById('currentsong');
 
             window.MPD_APP.mpd('playlistinfo', function(err, playlistinfo) {
-                var data = {},
-                    lines, i, line, index, key, val, song, active;
-
-                data.songs = [];
+                var data = {};
 
                 if (err) {
                     return console.error(err);
                 }
 
-                lines = playlistinfo.split('\n');
-                song = null;
+                data.songs = parseMPDResponse(playlistinfo, {
+                    'file': function(entry) {
+                        var active = currentsong.dataset
+                                && currentsong.dataset.pos === entry.Pos;
 
-                for (i = 0; i < lines.length; i++) {
-                    line = lines[i];
-                    index = line.indexOf(': ');
-                    if (index > -1) {
-                        key = line.substring(0, index);
-                        val = line.substring(index + 2);
-
-                        // The first key is 'file'.
-                        if (key === 'file') {
-                            if (song !== null) {
-                                active = currentsong.dataset
-                                        && currentsong.dataset.pos === song.Pos;
-
-                                data.songs.push(
-                                    <components.SingleEntry key={song.Pos} song={song} active={active} />
-                                );
-                            }
-
-                            song = {};
-                        }
-
-                        song[key] = val;
+                        return <components.SingleEntry key={entry.Pos} song={entry} active={active} />
                     }
-                }
-
-                if (song !== null) {
-                    active = currentsong.dataset
-                            && currentsong.dataset.pos === song.Pos;
-
-                    data.songs.push(
-                        <components.SingleEntry key={song.Pos} song={song} active={active} />
-                    );
-                }
+                });
 
                 self.replaceState(data);
             });

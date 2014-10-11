@@ -6,6 +6,7 @@
     var components = {};
     var updateState = window.MPD_APP.updateState;
     var formatTime = window.APP_LIB.formatTime;
+    var parseMPDResponse = window.APP_LIB.parseMPDResponse;
     window.MPD_APP.views.fileBrowser = components;
 
     components.Directory = React.createClass({
@@ -56,59 +57,20 @@
             var self = this;
 
             window.MPD_APP.mpd('lsinfo', this.props.pathName, function(err, playlistinfo) {
-                var data = {},
-                    lines, i, line, index, key, val, entry, active, uniqueKey = 0;
-
-                data.entries = [];
+                var count = 0, data = {};
 
                 if (err) {
                     return console.error(err);
                 }
 
-                lines = playlistinfo.split('\n');
-                entry = null;
-
-                for (i = 0; i < lines.length; i++) {
-                    line = lines[i];
-                    index = line.indexOf(': ');
-                    if (index > -1) {
-                        key = line.substring(0, index);
-                        val = line.substring(index + 2);
-
-                        // The first key is 'file' or 'directory'.
-                        if (key === 'file' || key === 'directory') {
-                            if (entry !== null) {
-                                if (entry.directory) {
-                                    data.entries.push(
-                                        <components.Directory entry={entry} key={uniqueKey++} />
-                                    );
-                                }
-                                else if (entry.file) {
-                                    data.entries.push(
-                                        <components.File entry={entry} key={uniqueKey++} />
-                                    );
-                                }
-                            }
-
-                            entry = {};
-                        }
-
-                        entry[key] = val;
+                data.entries = parseMPDResponse(playlistinfo, {
+                    'file': function(entry) {
+                        return <components.File entry={entry} key={count++} />;
+                    },
+                    'directory': function(entry) {
+                        return <components.Directory entry={entry} key={count++} />;
                     }
-                }
-
-                if (entry !== null) {
-                    if (entry.directory) {
-                        data.entries.push(
-                            <components.Directory entry={entry} key={uniqueKey++} />
-                        );
-                    }
-                    else if (entry.file) {
-                        data.entries.push(
-                            <components.File entry={entry} key={uniqueKey++} />
-                        );
-                    }
-                }
+                });
 
                 self.replaceState(data);
             });
