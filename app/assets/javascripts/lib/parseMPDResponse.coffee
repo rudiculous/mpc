@@ -1,6 +1,9 @@
 "use strict"
 
 
+window.APP_LIB ||= {}
+
+
 # ### Parses responses from MPD.
 #
 # The parameter `split` should be an object describing if and how to

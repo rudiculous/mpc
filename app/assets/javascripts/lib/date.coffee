@@ -1,7 +1,13 @@
 "use strict"
 
+
 window.APP_LIB ||= {}
 
+
+# ### Formats time.
+#
+# @param {Number} seconds
+# @returns {String}
 formatTime = (seconds) ->
   formatted = ''
 
