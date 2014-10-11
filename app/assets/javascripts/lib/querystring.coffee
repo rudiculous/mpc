@@ -5,7 +5,10 @@ window.APP_LIB ||= {}
 
 
 # Parses the query string.
-parseQueryString = (search) ->
+#
+# @param {String} search
+# @returns {Object}
+window.APP_LIB.parseQueryString = (search) ->
   params = {}
 
   if search isnt ''
@@ -35,7 +38,11 @@ parseQueryString = (search) ->
 
 
 # Builds a query string.
-stringifyQuery = (params, separator = '&') ->
+#
+# @param {Object} params
+# @param {String} [separator=&]
+# @returns {String}
+window.APP_LIB.stringifyQuery = (params, separator = '&') ->
   search = ''
 
   for key, value of params
@@ -50,12 +57,9 @@ stringifyQuery = (params, separator = '&') ->
       search += separator + key + '=' + value
 
     if search isnt ''
-      search = search.substring(1)
+      search = search.substring(separator.length)
 
   return search
 
-
-window.APP_LIB.parseQueryString = parseQueryString
-window.APP_LIB.stringifyQuery = stringifyQuery
 
 # vim: set ft=coffee:
