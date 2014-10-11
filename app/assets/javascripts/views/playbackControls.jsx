@@ -137,7 +137,16 @@
                         <components.PlaybackButton action='next'     icon='fast-forward'  />
                     </div>
                     <div className='playing-prog'>
-                        <div className='playing-prog-bar' style={{width: String(progress) + '%'}} />
+                        <div className='playing-prog-bar' style={{width: String(progress) + '%'}}
+                            role='progressbar'
+                            aria-valuemin='0'
+                            aria-valuemax={this.state.progress.duration}
+                            aria-valuenow={this.state.progress.elapsed}
+                            >
+                            <span className='sr-only'>
+                                {formatTime(this.state.progress.elapsed)} / {formatTime(this.state.progress.duration)}
+                            </span>
+                        </div>
                     </div>
                 </div>
             );

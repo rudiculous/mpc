@@ -7,8 +7,6 @@
     },
     "javascripts": {
         "main.js": [
-            "jquery.js",
-            "bootstrap.js",
             "socket.io-1.1.0.js",
             "react-0.11.2.js",
 
@@ -21,9 +19,8 @@
     },
     "stylesheets": {
         "main.css": [
-            "normalize.css",
             "google-fonts.css",
-            "bootstrap.min.css",
+            "bootstrap/bootstrap.less",
 
             "main.less"
         ]

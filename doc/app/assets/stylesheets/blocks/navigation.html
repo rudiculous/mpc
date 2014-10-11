@@ -3,24 +3,23 @@
 }
 
 <span class="hljs-class">.navigation-menu-item</span> {
-  <span class="hljs-attribute">background</span><span class="hljs-value">: transparent;</span>
-  <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#ddd</span>;</span>
   <span class="hljs-attribute">font-size</span><span class="hljs-value">: <span class="hljs-number">18</span>px;</span>
-  <span class="hljs-attribute">text-decoration</span><span class="hljs-value">: none;</span>
+  <span class="hljs-attribute">margin</span><span class="hljs-value">: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">5</span>px;</span>
 
-  <span class="hljs-attribute">display</span><span class="hljs-value">: block;</span>
-  <span class="hljs-attribute">margin</span><span class="hljs-value">: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">10</span>px;</span>
-  <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-number">5</span>px <span class="hljs-number">10</span>px;</span>
+  <span class="hljs-tag">a</span> {
+    <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#ddd</span>;</span>
 
-  &amp;<span class="hljs-pseudo">:hover</span>,
-  &amp;<span class="hljs-pseudo">:active</span> {
-    <span class="hljs-attribute">background</span><span class="hljs-value">: <span class="hljs-hexcolor">#444</span>;</span>
-    <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#eee</span>;</span>
-    <span class="hljs-attribute">text-decoration</span><span class="hljs-value">: none;</span>
+    &amp;<span class="hljs-pseudo">:hover</span>,
+    &amp;<span class="hljs-pseudo">:focus</span> {
+      <span class="hljs-attribute">background-color</span><span class="hljs-value">: <span class="hljs-hexcolor">#444</span>;</span>
+      <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#fff</span>;</span>
+    }
   }
 
-  &amp;<span class="hljs-class">.active</span> {
-    <span class="hljs-attribute">background</span><span class="hljs-value">: <span class="hljs-hexcolor">#333</span>;</span>
-    <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#dfdfdf</span>;</span>
+  &amp;<span class="hljs-class">.active</span> <span class="hljs-tag">a</span>,
+  &amp;<span class="hljs-class">.active</span> <span class="hljs-tag">a</span><span class="hljs-pseudo">:hover</span>,
+  &amp;<span class="hljs-class">.active</span> <span class="hljs-tag">a</span><span class="hljs-pseudo">:focus</span> {
+    <span class="hljs-attribute">background-color</span><span class="hljs-value">: <span class="hljs-hexcolor">#333</span>;</span>
+    <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#eee</span>;</span>
   }
 }</div></div></div></div></body></html>

@@ -38,17 +38,21 @@
                 className += ' active';
             }
 
-            return <a className={className} href={this.props.href}>{this.props.label}</a>;
+            return (
+                <li className={className}>
+                    <a href={this.props.href}>{this.props.label}</a>
+                </li>
+            );
         }
     });
 
     components.Menu = React.createClass({
         render: function() {
             return (
-                <div className='navigation-menu'>
+                <ul className='navigation-menu nav nav-pills nav-stacked'>
                     <components.Item href='/now_playing'  label='Now Playing'  key='now_playing'  />
                     <components.Item href='/file_browser' label='File Browser' key='file_browser' />
-                </div>
+                </ul>
             );
         }
     });
