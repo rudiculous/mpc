@@ -2,6 +2,7 @@
 
 var pathM = require('path');
 var rdclMiddleware = require('rdcl-middleware');
+var productionConfig = require('./settings/production');
 
 module.exports = function(grunt) {
 
@@ -15,6 +16,7 @@ module.exports = function(grunt) {
         'manifest': require('./app/assets/manifest'),
         'root': __dirname,
         'assetsDir': pathM.join(__dirname, 'static/assets'),
+        'staticBase': productionConfig.locals.staticBase,
     });
 
     grunt.registerTask('default', ['assets', 'groc']);
