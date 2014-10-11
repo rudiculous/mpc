@@ -453,16 +453,18 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "file",
           "data": {
             "language": {
-              "nameMatchers": [".js"],
-              "pygmentsLexer": "javascript",
-              "multiLineComment": ["/*", "*", "*/"],
-              "singleLineComment": ["//"],
+              "nameMatchers": [".coffee", "Cakefile"],
+              "pygmentsLexer": "coffee-script",
+              "highlightJS": "coffeescript",
+              "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+              "strictMultiLineEnd": false,
+              "singleLineComment": ["#"],
               "ignorePrefix": "}",
               "foldPrefix": "^",
-              "name": "JavaScript"
+              "name": "CoffeeScript"
             },
-            "sourcePath": "/home/rj/webapps/mpc/app/bootstrap.js",
-            "projectPath": "app/bootstrap.js",
+            "sourcePath": "/home/rj/webapps/mpc/app/bootstrap.coffee",
+            "projectPath": "app/bootstrap.coffee",
             "targetPath": "app/bootstrap",
             "pageTitle": "app/bootstrap",
             "title": "bootstrap"
@@ -481,16 +483,18 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
               "type": "file",
               "data": {
                 "language": {
-                  "nameMatchers": [".js"],
-                  "pygmentsLexer": "javascript",
-                  "multiLineComment": ["/*", "*", "*/"],
-                  "singleLineComment": ["//"],
+                  "nameMatchers": [".coffee", "Cakefile"],
+                  "pygmentsLexer": "coffee-script",
+                  "highlightJS": "coffeescript",
+                  "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                  "strictMultiLineEnd": false,
+                  "singleLineComment": ["#"],
                   "ignorePrefix": "}",
                   "foldPrefix": "^",
-                  "name": "JavaScript"
+                  "name": "CoffeeScript"
                 },
-                "sourcePath": "/home/rj/webapps/mpc/app/core/app.js",
-                "projectPath": "app/core/app.js",
+                "sourcePath": "/home/rj/webapps/mpc/app/core/app.coffee",
+                "projectPath": "app/core/app.coffee",
                 "targetPath": "app/core/app",
                 "pageTitle": "app/core/app",
                 "title": "app"
@@ -540,16 +544,18 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "file",
           "data": {
             "language": {
-              "nameMatchers": [".js"],
-              "pygmentsLexer": "javascript",
-              "multiLineComment": ["/*", "*", "*/"],
-              "singleLineComment": ["//"],
+              "nameMatchers": [".coffee", "Cakefile"],
+              "pygmentsLexer": "coffee-script",
+              "highlightJS": "coffeescript",
+              "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+              "strictMultiLineEnd": false,
+              "singleLineComment": ["#"],
               "ignorePrefix": "}",
               "foldPrefix": "^",
-              "name": "JavaScript"
+              "name": "CoffeeScript"
             },
-            "sourcePath": "/home/rj/webapps/mpc/app/index.js",
-            "projectPath": "app/index.js",
+            "sourcePath": "/home/rj/webapps/mpc/app/index.coffee",
+            "projectPath": "app/index.coffee",
             "targetPath": "app/index",
             "pageTitle": "app/index",
             "title": "index"
@@ -560,16 +566,18 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "file",
           "data": {
             "language": {
-              "nameMatchers": [".js"],
-              "pygmentsLexer": "javascript",
-              "multiLineComment": ["/*", "*", "*/"],
-              "singleLineComment": ["//"],
+              "nameMatchers": [".coffee", "Cakefile"],
+              "pygmentsLexer": "coffee-script",
+              "highlightJS": "coffeescript",
+              "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+              "strictMultiLineEnd": false,
+              "singleLineComment": ["#"],
               "ignorePrefix": "}",
               "foldPrefix": "^",
-              "name": "JavaScript"
+              "name": "CoffeeScript"
             },
-            "sourcePath": "/home/rj/webapps/mpc/app/routes.js",
-            "projectPath": "app/routes.js",
+            "sourcePath": "/home/rj/webapps/mpc/app/routes.coffee",
+            "projectPath": "app/routes.coffee",
             "targetPath": "app/routes",
             "pageTitle": "app/routes",
             "title": "routes"
@@ -590,16 +598,18 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "type": "file",
           "data": {
             "language": {
-              "nameMatchers": [".js"],
-              "pygmentsLexer": "javascript",
-              "multiLineComment": ["/*", "*", "*/"],
-              "singleLineComment": ["//"],
+              "nameMatchers": [".coffee", "Cakefile"],
+              "pygmentsLexer": "coffee-script",
+              "highlightJS": "coffeescript",
+              "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+              "strictMultiLineEnd": false,
+              "singleLineComment": ["#"],
               "ignorePrefix": "}",
               "foldPrefix": "^",
-              "name": "JavaScript"
+              "name": "CoffeeScript"
             },
-            "sourcePath": "/home/rj/webapps/mpc/lib/mpd.js",
-            "projectPath": "lib/mpd.js",
+            "sourcePath": "/home/rj/webapps/mpc/lib/mpd.coffee",
+            "projectPath": "lib/mpd.coffee",
             "targetPath": "lib/mpd",
             "pageTitle": "lib/mpd",
             "title": "mpd"

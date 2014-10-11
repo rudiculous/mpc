@@ -1,5 +1,7 @@
 "use strict";
 
+require('coffee-script/register');
+
 var pathM = require('path');
 var rdclMiddleware = require('rdcl-middleware');
 var productionConfig = require('./settings/production');

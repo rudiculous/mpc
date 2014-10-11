@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 "use strict";
 
+require('coffee-script/register');
+
 var app = require('./app');
 var config = app.config;
 

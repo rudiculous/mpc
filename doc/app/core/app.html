@@ -1,78 +1,68 @@
-<!DOCTYPE html><html lang="en"><head><title>app/core/app</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="app/core/app"><meta name="groc-project-path" content="app/core/app.js"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">app/core/app.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-pi">"use strict"</span>;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="dependencies">Dependencies</h1></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
-<span class="hljs-keyword">var</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);
-<span class="hljs-keyword">var</span> pathM = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<!DOCTYPE html><html lang="en"><head><title>app/core/app</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../"><meta name="groc-document-path" content="app/core/app"><meta name="groc-project-path" content="app/core/app.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../assets/style.css"><script type="text/javascript" src="../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">app/core/app.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-string">"use strict"</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="dependencies">Dependencies</h1></div></div></div><div class="segment"><div class="code"><div class="wrapper">fs = <span class="hljs-built_in">require</span> <span class="hljs-string">'fs'</span>
+http = <span class="hljs-built_in">require</span> <span class="hljs-string">'http'</span>
+pathM = <span class="hljs-built_in">require</span> <span class="hljs-string">'path'</span>
 
-<span class="hljs-keyword">var</span> bodyParser = <span class="hljs-built_in">require</span>(<span class="hljs-string">'body-parser'</span>);
-<span class="hljs-keyword">var</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
-<span class="hljs-keyword">var</span> io = <span class="hljs-built_in">require</span>(<span class="hljs-string">'socket.io'</span>);
-<span class="hljs-keyword">var</span> swig = <span class="hljs-built_in">require</span>(<span class="hljs-string">'swig'</span>);
-<span class="hljs-keyword">var</span> rdclMiddleware = <span class="hljs-built_in">require</span>(<span class="hljs-string">'rdcl-middleware'</span>);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="initialization">Initialization</h1></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> root = pathM.join(__dirname, <span class="hljs-string">'../../'</span>);
-<span class="hljs-keyword">var</span> app = exports = module.exports = express();
+bodyParser = <span class="hljs-built_in">require</span> <span class="hljs-string">'body-parser'</span>
+express = <span class="hljs-built_in">require</span> <span class="hljs-string">'express'</span>
+io = <span class="hljs-built_in">require</span> <span class="hljs-string">'socket.io'</span>
+swig = <span class="hljs-built_in">require</span> <span class="hljs-string">'swig'</span>
+rdclMiddleware = <span class="hljs-built_in">require</span> <span class="hljs-string">'rdcl-middleware'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h1 id="initialization">Initialization</h1></div></div></div><div class="segment"><div class="code"><div class="wrapper">root = pathM.join __dirname, <span class="hljs-string">'../../'</span>
+app = <span class="hljs-built_in">exports</span> = <span class="hljs-built_in">module</span>.<span class="hljs-built_in">exports</span> = express()
 
-<span class="hljs-keyword">var</span> settings = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../../settings'</span>);
-app.config = settings.config;
+settings = <span class="hljs-built_in">require</span> <span class="hljs-string">'../../settings'</span>
+app.config = settings.config
 
-app.logger = <span class="hljs-keyword">new</span> rdclMiddleware.Logger();
-app.use(bodyParser.json());
-app.enable(<span class="hljs-string">'trust proxy'</span>);
+app.logger = <span class="hljs-keyword">new</span> rdclMiddleware.Logger()
+app.use bodyParser.json()
+app.enable <span class="hljs-string">'trust proxy'</span>
 
-app.server = http.Server(app);
-app.listen = app.server.listen.bind(app.server);
+app.server = http.Server(app)
+app.listen = app.server.listen.bind(app.server)
 
-app.io = io(app.server);
-app.mpd = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../../lib/mpd'</span>);
-app.mpd.connect(app.config.mpd.port, app.config.mpd.host);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the connection to MPD gets lost, we try to reestablish the
+app.io = io(app.server)
+app.mpd = <span class="hljs-built_in">require</span> <span class="hljs-string">'../../lib/mpd'</span>
+app.mpd.connect app.config.mpd.port, app.config.mpd.host</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If the connection to MPD gets lost, we try to reestablish the
 connection. To prevent spamming, we wait a little longer between each
-attempt (up to a certain maximum).</p></div></div><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> retryAfterMS_initial = <span class="hljs-number">250</span>;
-<span class="hljs-keyword">var</span> retryAfterMS_incr = <span class="hljs-number">250</span>;
-<span class="hljs-keyword">var</span> retryAfterMS_max = <span class="hljs-number">5000</span>;
-<span class="hljs-keyword">var</span> retryAfterMS = retryAfterMS_initial;
+attempt (up to a certain maximum).</p></div></div><div class="code"><div class="wrapper">retryAfter =
+  <span class="hljs-attribute">initial</span>: <span class="hljs-number">250</span>
+  <span class="hljs-attribute">incr</span>: <span class="hljs-number">250</span>
+  <span class="hljs-attribute">max</span>: <span class="hljs-number">5000</span>
+retryAfter.val = retryAfter.initial
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reconnectMPD</span><span class="hljs-params">(err)</span> {</span>
-    <span class="hljs-keyword">if</span> (err) {
-        app.logger.error(<span class="hljs-string">'MPD connection lost: %s'</span>, err.message);
-    }
-    <span class="hljs-keyword">else</span> {
-        app.logger.warning(<span class="hljs-string">'MPD connection lost.'</span>);
-    }
+<span class="hljs-function"><span class="hljs-title">reconnectMPD</span> = <span class="hljs-params">(err)</span> -&gt;</span>
+  <span class="hljs-keyword">if</span> err
+    app.logger.error <span class="hljs-string">'MPD connection lost: %s'</span>, err.message
+  <span class="hljs-keyword">else</span>
+    app.logger.warning <span class="hljs-string">'MPD connection lost'</span>
 
-    setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reconnect</span><span class="hljs-params">()</span> {</span>
-        <span class="hljs-keyword">if</span> (retryAfterMS &lt; retryAfterMS_max) {
-            retryAfterMS += retryAfterMS_incr;
-        }
+  setTimeout<span class="hljs-function"> -&gt;</span>
+    retryAfter.val += retryAfter.incr <span class="hljs-keyword">if</span> retryAfter.val &lt; retryAfter.max
+    app.logger.info <span class="hljs-string">'Trying to reestablish MPD connection.'</span>
+    app.mpd.connect app.config.mpd.port, app.config.mpd.host
+  , retryAfter.val
 
-        app.logger.info(<span class="hljs-string">'Trying to reestablish MPD connection.'</span>);
-        app.mpd.connect(app.config.mpd.port, app.config.mpd.host);
-    }, retryAfterMS);
-}
-
-app.mpd.on(<span class="hljs-string">'connection:closed'</span>, reconnectMPD);
-app.mpd.on(<span class="hljs-string">'connection:error'</span>, reconnectMPD);
-app.mpd.on(<span class="hljs-string">'connection:ready'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
-    retryAfterMS = retryAfterMS_initial;
-    app.logger.info(<span class="hljs-string">'Successfully connected to MPD.'</span>);
-});</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="template-engine">Template engine</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">var</span> templateRoot = pathM.join(root, <span class="hljs-string">'app/templates'</span>);
-swig.setDefaults({ <span class="hljs-string">'loader'</span>: <span class="hljs-keyword">new</span> rdclMiddleware.TemplateLoader(templateRoot) });
-app.engine(<span class="hljs-string">'swig.html'</span>, swig.renderFile);
-app.set(<span class="hljs-string">'view engine'</span>, <span class="hljs-string">'swig.html'</span>);
-app.set(<span class="hljs-string">'views'</span>, templateRoot);</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="assets">Assets</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">if</span> (settings.environment === <span class="hljs-string">'production'</span>) {
-    <span class="hljs-keyword">var</span> assets = rdclMiddleware.assets({
-        <span class="hljs-string">'environment'</span>: <span class="hljs-string">'production'</span>,
-        <span class="hljs-string">'root'</span>: root,
-        <span class="hljs-string">'assetsBaseURI'</span>: settings.config.locals.staticBase + <span class="hljs-string">'/assets'</span>,
-        <span class="hljs-string">'manifest'</span>: <span class="hljs-built_in">require</span>(<span class="hljs-string">'../../static/assets/manifest'</span>),
-    });
-    app.use(assets);
-}
-<span class="hljs-keyword">else</span> {
-    <span class="hljs-keyword">var</span> assets = rdclMiddleware.assets({
-        <span class="hljs-string">'environment'</span>: <span class="hljs-string">'development'</span>,
-        <span class="hljs-string">'root'</span>: root,
-        <span class="hljs-string">'assetsBaseURI'</span>: <span class="hljs-string">'/assets'</span>,
-        <span class="hljs-string">'manifest'</span>: <span class="hljs-built_in">require</span>(<span class="hljs-string">'../assets/manifest'</span>),
-    });
-    app.use(assets);
-    app.use(<span class="hljs-string">'/assets'</span>, assets.serveAssets);
-}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Set locals. Locals are made available to the template parser. </p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">Object</span>.keys(settings.config.locals).forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key)</span> {</span>
-    app.locals[key] = settings.config.locals[key];
-});</div></div></div></div></body></html>
+app.mpd.<span class="hljs-literal">on</span> <span class="hljs-string">'connection:closed'</span>, reconnectMPD
+app.mpd.<span class="hljs-literal">on</span> <span class="hljs-string">'connection:error'</span>, reconnectMPD
+app.mpd.<span class="hljs-literal">on</span> <span class="hljs-string">'connection:ready'</span>,<span class="hljs-function"> -&gt;</span>
+  retryAfter.val = retryAfter.initial
+  app.logger.info <span class="hljs-string">'Successfully connected to MPD.'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="template-engine">Template engine</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper">templateRoot = pathM.join root, <span class="hljs-string">'app/templates'</span>
+swig.setDefaults
+  <span class="hljs-attribute">loader</span>: <span class="hljs-keyword">new</span> rdclMiddleware.TemplateLoader(templateRoot)
+app.engine <span class="hljs-string">'swig.html'</span>, swig.renderFile
+app.set <span class="hljs-string">'view engine'</span>, <span class="hljs-string">'swig.html'</span>
+app.set <span class="hljs-string">'views'</span>, templateRoot</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="assets">Assets</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-keyword">if</span> settings.environment <span class="hljs-keyword">is</span> <span class="hljs-string">'production'</span>
+  assets = rdclMiddleware.assets
+    <span class="hljs-attribute">environment</span>: <span class="hljs-string">'production'</span>
+    <span class="hljs-attribute">root</span>: root
+    <span class="hljs-attribute">assetsBaseURI</span>: settings.config.locals.staticBase + <span class="hljs-string">'/assets'</span>
+    <span class="hljs-attribute">manifest</span>: <span class="hljs-built_in">require</span> <span class="hljs-string">'../../static/assets/manifest'</span>
+  app.use assets
+<span class="hljs-keyword">else</span>
+  assets = rdclMiddleware.assets
+    <span class="hljs-attribute">environment</span>: <span class="hljs-string">'development'</span>
+    <span class="hljs-attribute">root</span>: root
+    <span class="hljs-attribute">assetsBaseURI</span>: <span class="hljs-string">'/assets'</span>
+    <span class="hljs-attribute">manifest</span>: <span class="hljs-built_in">require</span> <span class="hljs-string">'../assets/manifest'</span>
+  app.use assets
+  app.use <span class="hljs-string">'/assets'</span>, assets.serveAssets</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Set locals. Locals are made available to the template parser.</p></div></div><div class="code"><div class="wrapper">Object.keys<span class="hljs-function"><span class="hljs-params">(settings.config.locals)</span>.<span class="hljs-title">forEach</span> <span class="hljs-params">(key)</span> -&gt;</span>
+  app.locals[key] = settings.config.locals[key]</div></div></div></div></body></html>

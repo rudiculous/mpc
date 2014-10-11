@@ -1,43 +1,29 @@
-<!DOCTYPE html><html lang="en"><head><title>app/routes</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../"><meta name="groc-document-path" content="app/routes"><meta name="groc-project-path" content="app/routes.js"><link rel="stylesheet" type="text/css" media="all" href="../assets/style.css"><script type="text/javascript" src="../assets/behavior.js"></script><body><div id="meta"><div class="file-path">app/routes.js</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-pi">"use strict"</span>;
+<!DOCTYPE html><html lang="en"><head><title>app/routes</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../"><meta name="groc-document-path" content="app/routes"><meta name="groc-project-path" content="app/routes.coffee"><link rel="stylesheet" type="text/css" media="all" href="../assets/style.css"><script type="text/javascript" src="../assets/behavior.js"></script><body><div id="meta"><div class="file-path">app/routes.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-string">"use strict"</span>
 
-<span class="hljs-keyword">var</span> app = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./core/app'</span>);
+app = <span class="hljs-built_in">require</span> <span class="hljs-string">'./core/app'</span>
 
-app.io.on(<span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">connection</span><span class="hljs-params">(socket)</span> {</span>
-    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">changedHandler</span><span class="hljs-params">(message)</span> {</span>
-        socket.emit(<span class="hljs-string">'mpd:changed'</span>, message);
-    }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>add listeners</p></div></div><div class="code"><div class="wrapper">    app.mpd.on(<span class="hljs-string">'changed'</span>, changedHandler);
+app.io.<span class="hljs-literal">on</span> <span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-params">(socket)</span> -&gt;</span>
+  <span class="hljs-function"><span class="hljs-title">changedHandler</span> = <span class="hljs-params">(message)</span> -&gt;</span> socket.emit <span class="hljs-string">'mpd:changed'</span>, message</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>add listeners</p></div></div><div class="code"><div class="wrapper">  app.mpd.<span class="hljs-literal">on</span> <span class="hljs-string">'changed'</span>, changedHandler
 
-    socket.on(<span class="hljs-string">'mpd:command'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">executeCommand</span><span class="hljs-params">(data, callback)</span> {</span>
-        <span class="hljs-keyword">var</span> command, args;
-        <span class="hljs-keyword">if</span> (data &amp;&amp; data.command) {
-            command = data.command;
-            args = data.args;
+  socket.<span class="hljs-literal">on</span> <span class="hljs-string">'mpd:command'</span>, <span class="hljs-function"><span class="hljs-params">(data, callback)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> data <span class="hljs-keyword">and</span> data.command
+      {command, args} = data
 
-            <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">Array</span>.isArray(args)) {
-                args = [];
-            }
+      args = [] <span class="hljs-keyword">unless</span> Array.isArray args
 
-            args.unshift(command);
-            args.push(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(err, res)</span> {</span>
-                <span class="hljs-keyword">if</span> (callback &amp;&amp; <span class="hljs-keyword">typeof</span>(callback) === <span class="hljs-string">'function'</span>) {
-                    <span class="hljs-keyword">if</span> (err) {
-                        <span class="hljs-keyword">if</span> (err.message) {
-                            err = <span class="hljs-string">'error: '</span> + err.message;
-                        }
-                        <span class="hljs-keyword">else</span> {
-                            err = <span class="hljs-string">'unknown error'</span>;
-                        }
-                    }
-                    callback(err, res);
-                }
-            });
+      args.unshift command
+      args.push <span class="hljs-function"><span class="hljs-params">(err, res)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> callback <span class="hljs-keyword">and</span> <span class="hljs-keyword">typeof</span>(callback) <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+          <span class="hljs-keyword">if</span> err
+            err =
+              <span class="hljs-keyword">if</span> err.message
+                <span class="hljs-string">'error: '</span> + err.message
+              <span class="hljs-keyword">else</span>
+                <span class="hljs-string">'unknown error'</span>
+          callback(err, res)
 
-            app.mpd.push.apply(<span class="hljs-literal">null</span>, args);
-        }
-    });
+      app.mpd.push.apply <span class="hljs-literal">null</span>, args
+  
+  socket.<span class="hljs-literal">on</span> <span class="hljs-string">'disconnect'</span>,<span class="hljs-function"> -&gt;</span> app.mpd.removeListener <span class="hljs-string">'changed'</span>, changedHandler
 
-    socket.on(<span class="hljs-string">'disconnect'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">disconnect</span><span class="hljs-params">()</span> {</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>cleanup</p></div></div><div class="code"><div class="wrapper">        app.mpd.removeListener(<span class="hljs-string">'changed'</span>, changedHandler);
-    });
-
-    socket.emit(<span class="hljs-string">'socket:ready'</span>);
-});</div></div></div></div></body></html>
+  socket.emit <span class="hljs-string">'socket:ready'</span></div></div></div></div></body></html>
