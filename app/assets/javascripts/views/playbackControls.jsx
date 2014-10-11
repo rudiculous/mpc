@@ -83,7 +83,7 @@
             }
 
             window.MPD_APP.mpd('status', function(err, status) {
-                var data;
+                var data, i;
 
                 if (err) {
                     return console.error(err);
