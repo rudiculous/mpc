@@ -13,6 +13,7 @@
             "lib/*.coffee",
             "initialize.coffee",
             "views/*.jsx",
+            "views/*.cjsx",
             "bootstrap.coffee",
             "routes.coffee"
         ]
