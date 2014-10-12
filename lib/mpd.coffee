@@ -145,22 +145,19 @@ exports.close = exports.end = ->
 
 # Pushes a command onto the queue.
 #
-# @param {String...} data
-# @param {Function} callback
-exports.push = (data, callback) ->
+# @param {String}    command
+# @param {String...} args
+# @param {Function}  callback
+exports.push = (command, args..., callback) ->
   last = arguments.length - 1
-  slice = Array.prototype.slice
 
-  if arguments.length is 0 or typeof(arguments[last]) isnt 'function'
-    return # noop
-
-  callback = arguments[last]
+  if typeof(callback) isnt 'function'
+    return # Not doing anything without a callback.
 
   if arguments.length < 2
     return callback new Error('Invalid number of arguments.')
 
-  command = arguments[0]
-  args = slice.call(arguments, 1, last).join(' ').replace('\n', '')
+  args = args.join(' ').replace('\n', '')
   args = ' ' + args unless args is ''
 
   unless validCommands[command]

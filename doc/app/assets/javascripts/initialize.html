@@ -15,18 +15,14 @@ Object.defineProperty app, <span class="hljs-string">'title'</span>,
       <span class="hljs-keyword">if</span> newTitle
         newTitle + <span class="hljs-string">' | '</span> + baseTitle
       <span class="hljs-keyword">else</span>
-        baseTitle</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Sends data to the server and waits for a response.</p></div></div><div class="code"><div class="wrapper">app.<span class="hljs-function"><span class="hljs-title">mpd</span> = <span class="hljs-params">(command, args, callback)</span> -&gt;</span>
+        baseTitle</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Sends data to the server and waits for a response.</p></div></div><div class="code"><div class="wrapper">app.<span class="hljs-function"><span class="hljs-title">mpd</span> = <span class="hljs-params">(command, args..., callback)</span> -&gt;</span>
   last = arguments.length - <span class="hljs-number">1</span>
 
   <span class="hljs-keyword">if</span> arguments.length &lt; <span class="hljs-number">2</span>
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'mpd() called with too few arguments.'</span>)
 
-  <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span>(arguments[last]) <span class="hljs-keyword">isnt</span> <span class="hljs-string">'function'</span>
+  <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span>(callback) <span class="hljs-keyword">isnt</span> <span class="hljs-string">'function'</span>
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'Last argument to mpd() should be a callback.'</span>)
-
-  command = arguments[<span class="hljs-number">0</span>]
-  args = Array.prototype.slice.call(arguments, <span class="hljs-number">1</span>, last)
-  callback = arguments[last]
 
   socket.emit <span class="hljs-string">'mpd:command'</span>,
     <span class="hljs-attribute">command</span>: command
