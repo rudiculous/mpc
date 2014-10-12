@@ -8,20 +8,20 @@ components = window.MPD_APP.views.nowPlaying = {}
 
 components.SingleEntry = React.createClass
   clickHandler: ->
-    if this.props.song.Pos
-      mpd 'play', this.props.song.Pos, (err) ->
+    if @props.song.Pos
+      mpd 'play', @props.song.Pos, (err) ->
         console.error if err
 
   render: ->
-    {Artist, Album, Track, Title, Time} = this.props.song
+    {Artist, Album, Track, Title, Time} = @props.song
 
     active =
-      if this.props.active
+      if @props.active
         {}
       else
         {display:'none'}
 
-    <tr className={this.props.active ? 'now-playing' : ''} onClick={this.clickHandler}>
+    <tr className={@props.active ? 'now-playing' : ''} onClick={@clickHandler}>
       <td style={{'text-align':'center'}}><span className='glyphicon glyphicon-play' style={active} /></td>
       <td>{Artist} - {Album}</td>
       <td style={{'text-align':'right'}}>{Track}</td>
@@ -31,22 +31,20 @@ components.SingleEntry = React.createClass
 
 components.NowPlaying = React.createClass
   getInitialState: ->
-    this.fetchAndSetState()
+    @fetchAndSetState()
     return {
       songs: []
     }
 
   cleanUpHandlers: ->
-    if this.__mpdChangedHandler
-      document.removeEventListener 'mpd:changed', this.__mpdChangedHandler
-      delete this.__mpdChangedHandler
+    if @__mpdChangedHandler
+      document.removeEventListener 'mpd:changed', @__mpdChangedHandler
+      delete @__mpdChangedHandler
 
   componentDidMount: ->
-    self = this
+    @cleanUpHandlers()
 
-    this.cleanUpHandlers()
-
-    this.__mpdChangedHandler = (event) ->
+    @__mpdChangedHandler = (event) =>
       what =
         if event.detail
           event.detail.what
@@ -54,18 +52,16 @@ components.NowPlaying = React.createClass
           null
 
       if what is 'player' or what is 'playlist'
-        self.fetchAndSetState()
+        @fetchAndSetState()
 
-    document.addEventListener 'mpd:changed', this.__mpdChangedHandler, false
+    document.addEventListener 'mpd:changed', @__mpdChangedHandler, false
 
-  componentWillUnmount: -> this.cleanUpHandlers()
+  componentWillUnmount: -> @cleanUpHandlers()
 
   fetchAndSetState: ->
-    self = this
-
     currentsong = document.getElementById 'currentsong'
 
-    mpd 'playlistinfo', (err, playlistinfo) ->
+    mpd 'playlistinfo', (err, playlistinfo) =>
       return console.error(err) if err
 
       data = {}
@@ -76,7 +72,7 @@ components.NowPlaying = React.createClass
 
           <components.SingleEntry key={entry.Pos} song={entry} active={active} />
 
-      self.replaceState data
+      @replaceState data
 
   render: ->
     <div className='now-playing'>
@@ -98,7 +94,7 @@ components.NowPlaying = React.createClass
 
         <tfoot />
 
-        <tbody>{this.state.songs}</tbody>
+        <tbody>{@state.songs}</tbody>
       </table>
     </div>
 

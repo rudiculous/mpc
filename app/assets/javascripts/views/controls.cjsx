@@ -95,39 +95,35 @@ components.Controls = React.createClass
     }
 
   componentDidMount: ->
-    self = @
-
     # Increases progress while playing.
-    setInterval ->
-      return unless self.state.state is 'play'
+    setInterval =>
+      return unless @state.state is 'play'
 
-      if self.state.progress
-        elapsed = self.state.progress.elapsed || 0
+      if @state.progress
+        elapsed = @state.progress.elapsed || 0
 
-        self.setState
+        @setState
           progress:
             elapsed: elapsed + 1
-            duration: self.state.progress.duration
+            duration: @state.progress.duration
     , 1000
 
-    document.addEventListener 'mpd:changed', (event) ->
+    document.addEventListener 'mpd:changed', (event) =>
       if event.detail
         {what} = event.detail
       else
         what = null
 
       if what is 'player' or what is 'options'
-        self.fetchAndSetState()
+        @fetchAndSetState()
     , false
 
   fetchAndSetState: ->
-    self = @
-
     if progressUpdater isnt null
       clearTimeout progressUpdater
       progressUpdater = null
 
-    mpd 'status', (err, status) ->
+    mpd 'status', (err, status) =>
       return console.error(err) if err
 
       data = parseMPDResponse status
@@ -139,11 +135,11 @@ components.Controls = React.createClass
           data.progress.elapsed = Number data.time.substring(0, i)
           data.progress.duration = Number data.time.substring(i + 1)
 
-      self.replaceState data
+      @replaceState data
 
       if data.state.state is 'play'
         progressUpdater = setTimeout ->
-          self.fetchAndSetState()
+          @fetchAndSetState()
         , progressInterval
 
   render: ->
@@ -193,9 +189,7 @@ components.Player = React.createClass
     return {}
 
   componentDidMount: ->
-    self = @
-
-    document.addEventListener 'mpd:changed', (event) ->
+    document.addEventListener 'mpd:changed', (event) =>
       what =
         if event.detail
           event.detail.what
@@ -203,14 +197,13 @@ components.Player = React.createClass
           null
 
       if what is 'player' or what is 'playlist'
-        self.fetchAndSetState()
+        @fetchAndSetState()
     , false
 
   fetchAndSetState: ->
-    self = @
-    mpd 'currentsong', (err, currentsong) ->
+    mpd 'currentsong', (err, currentsong) =>
       return console.error(err) if err
-      self.replaceState parseMPDResponse(currentsong)
+      @replaceState parseMPDResponse(currentsong)
 
   render: ->
     <div className='controls-player'>

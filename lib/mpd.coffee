@@ -203,7 +203,7 @@ shift = (skipNoIdle = false) ->
   act = ->
     client.write command + args + '\n', ->
       getData ->
-        callback.apply this, arguments
+        callback.apply @, arguments
         done()
 
   return if client is null

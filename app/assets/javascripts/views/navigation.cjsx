@@ -8,17 +8,16 @@ components.Item = React.createClass
   getInitialState: -> history.state || {}
 
   componentDidMount: ->
-    self = this
-    document.addEventListener 'state:updated', ->
-      self.replaceState(history.state || {})
+    document.addEventListener 'state:updated', =>
+      @replaceState(history.state || {})
     , false
 
   render: ->
     className = 'navigation-menu-item'
-    className += ' active' if this.state.activeTab is this.props.key
+    className += ' active' if @state.activeTab is @props.key
 
     <li className={className}>
-      <a href={this.props.href}>{this.props.label}</a>
+      <a href={@props.href}>{@props.label}</a>
     </li>
 
 components.Menu = React.createClass

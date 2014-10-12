@@ -12,11 +12,11 @@ components.Directory = React.createClass
     event.preventDefault()
 
   render: ->
-    {directory} = this.props.entry
+    {directory} = @props.entry
     segments = directory.split '/'
     lastSegment = segments[segments.length - 1]
 
-    <li onContextMenu={this.contextMenu} className='list-group-item'>
+    <li onContextMenu={@contextMenu} className='list-group-item'>
       <a href={"/file_browser?pathName=#{encodeURIComponent directory}"}>
         {lastSegment}
       </a>
@@ -24,7 +24,7 @@ components.Directory = React.createClass
 
 components.File = React.createClass
   render: ->
-    {Artist, Album, Track, Title, Time} = this.props.entry
+    {Artist, Album, Track, Title, Time} = @props.entry
 
     <tr>
       <td>{Artist} - {Album}</td>
@@ -35,7 +35,7 @@ components.File = React.createClass
 
 components.FileBrowser = React.createClass
   getInitialState: ->
-    this.fetchAndSetState()
+    @fetchAndSetState()
     return {
       loading: true
       entries: []
@@ -44,11 +44,9 @@ components.FileBrowser = React.createClass
     }
 
   fetchAndSetState: ->
-    self = this
-
-    mpd 'lsinfo', this.props.pathName, (err, playlistinfo) ->
+    mpd 'lsinfo', @props.pathName, (err, playlistinfo) =>
       if err
-        self.setState
+        @setState
           loading: false
           error: err
         return console.error err
@@ -68,12 +66,12 @@ components.FileBrowser = React.createClass
           data.directories.push directory
           return directory
 
-      self.replaceState data
+      @replaceState data
 
   render: ->
     crumbs = []
     crumbCount = 0
-    {pathName} = this.props
+    {pathName} = @props
     pathSoFar = ''
 
     if pathName
@@ -98,20 +96,20 @@ components.FileBrowser = React.createClass
       )
 
     contents = (
-      if this.state.loading
+      if @state.loading
         <div className='alert alert-info'>Loading&hellip;</div>
-      else if this.state.error
+      else if @state.error
         <div className='alert alert-danger'>
           <strong>An error occurred!</strong>
-          <pre>{this.state.error}</pre>
+          <pre>{@state.error}</pre>
         </div>
       else
         directories = (
-          if this.state.directories.length
+          if @state.directories.length
             <div>
               <h2>Directories</h2>
               <ul className='list-group'>
-                {this.state.directories}
+                {@state.directories}
               </ul>
             </div>
           else
@@ -119,7 +117,7 @@ components.FileBrowser = React.createClass
         )
 
         files = (
-          if this.state.files.length
+          if @state.files.length
             <table className='playlist table table-striped table-condensed table-hover'>
               <col style={{width: '400px'}} />
               <col style={{width: '50px'}} />
@@ -135,7 +133,7 @@ components.FileBrowser = React.createClass
 
               <tfoot />
 
-              <tbody>{this.state.files}</tbody>
+              <tbody>{@state.files}</tbody>
             </table>
           else
             <p>No filed found.</p>

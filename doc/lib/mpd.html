@@ -149,7 +149,7 @@ still be idle. If so, pass <code>onlyIfSkipNoIdle</code> to not write a new
   <span class="hljs-function"><span class="hljs-title">act</span> = -&gt;</span>
     client.write command + args + <span class="hljs-string">'\n'</span>,<span class="hljs-function"> -&gt;</span>
       getData<span class="hljs-function"> -&gt;</span>
-        callback.apply <span class="hljs-keyword">this</span>, arguments
+        callback.apply @, arguments
         done()
 
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> client <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
