@@ -19,10 +19,7 @@ a.player-control {
   padding: 2px 7px;
   text-decoration: none;
 
-  &:hover,
-  &:focus {
-    color: #fff;
-  }
+  &:hover, &:focus { color: #fff; }
 
   &.small {
     font-size: 12px;
@@ -31,20 +28,17 @@ a.player-control {
 
   &.active {
     color: #3c3;
-
-    &:hover,
-    &:focus {
-      color: #3f3;
-    }
+    &:hover, &:focus { color: #3f3; }
   }
 
   &.inactive {
     color: #999;
+    &:hover, &:focus { color: #fff; }
+  }
 
-    &:hover,
-    &:focus {
-      color: #fff;
-    }
+  &.in-progress {
+    color: #e83;
+    &:hover, &:focus { color: #fb4; }
   }
 }
 

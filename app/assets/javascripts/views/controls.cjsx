@@ -42,7 +42,16 @@ components.ButtonMixin =
 
 components.Button = React.createClass
   componentDidMount: ->
-    jQuery(@getDOMNode()).tooltip()
+    @$ = jQuery @getDOMNode()
+    @$.tooltip()
+
+  componentDidUpdate: ->
+    @$ = jQuery @getDOMNode()
+
+    if @$.attr('title')
+      if @$.attr('title') isnt @$.attr('data-original-title')
+        @$.tooltip('fixTitle')
+        @$.tooltip('show') if @$.is '[aria-describedby]'
 
   render: ->
     <a className={@props.className}
@@ -58,8 +67,12 @@ components.UpdateButton = React.createClass
   getAction: -> 'update'
 
   render: ->
-    <components.Button className='player-control small' onClick={@action}
-                       title='Update Music Database' glyphIcon={@getClass()} />
+    if @props.updating
+      <components.Button className='player-control small in-progress' onClick={@action}
+                        title={"Updating (\##{@props.updating})"} glyphIcon={@getClass()} />
+    else
+      <components.Button className='player-control small' onClick={@action}
+                         title='Update Music Database' glyphIcon={@getClass()} />
 
 components.StateButton = React.createClass
   mixins: [components.MPDCommandMixin, components.ButtonMixin]
@@ -109,13 +122,7 @@ components.Controls = React.createClass
     , 1000
 
     document.addEventListener 'mpd:changed', (event) =>
-      if event.detail
-        {what} = event.detail
-      else
-        what = null
-
-      if what is 'player' or what is 'options'
-        @fetchAndSetState()
+      @fetchAndSetState()
     , false
 
   fetchAndSetState: ->
@@ -167,7 +174,7 @@ components.Controls = React.createClass
         <components.StateButton action='random'  icon='random'   status={@state.random}  title='Play Tracks In Random Order' />
         <components.StateButton action='consume' icon='trash'    status={@state.consume} title='Consume Tracks After Playing' />
         <components.StateButton action='single'  icon='asterisk' status={@state.single}  title='Play a Single Track' />
-        <components.UpdateButton icon='refresh' />
+        <components.UpdateButton icon='refresh' updating={@state.updating_db} />
       </div>
       <div className='playing-prog'>
         <div className='playing-prog-bar' style={{width: String(progress) + '%'}}
