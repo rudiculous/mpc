@@ -16,28 +16,86 @@ components = window.MPD_APP.views.controls = {}
 progressUpdater = null
 progressInterval = 15000
 
-components.PlaybackButton = React.createClass
+components.MPDCommandMixin =
   action: (event) ->
     event.preventDefault()
-    mpd this.props.action, (err) ->
-      console.error(err) if err
 
-  getClass: -> "glyphicon glyphicon-#{this.props.icon}"
+    action =
+      if typeof(@getAction) is 'function'
+        @getAction()
+      else
+        @props.action
+
+    args =
+      if typeof(@getArgs) is 'function'
+        @getArgs()
+      else
+        null
+
+    if args is null
+      mpd action, (err) -> console.error(err) if err
+    else
+      mpd action, args, (err) -> console.error(err) if err
+
+components.ButtonMixin =
+  getClass: -> "glyphicon glyphicon-#{@props.icon}"
+
+components.Button = React.createClass
+  componentDidMount: ->
+    jQuery(@getDOMNode()).tooltip()
 
   render: ->
-    <a className='player-control' onClick={this.action}>
-      <span className={this.getClass()} />
+    <a className={@props.className}
+       onClick={@props.onClick}
+       data-toggle={if @props.title then 'tooltip'}
+       title={@props.title}>
+      <span className={@props.glyphIcon} />
     </a>
+
+components.UpdateButton = React.createClass
+  mixins: [components.MPDCommandMixin, components.ButtonMixin]
+
+  getAction: -> 'update'
+
+  render: ->
+    <components.Button className='player-control small' onClick={@action}
+                       title='Update Music Database' glyphIcon={@getClass()} />
+
+components.StateButton = React.createClass
+  mixins: [components.MPDCommandMixin, components.ButtonMixin]
+
+  getArgs: -> if @props.status is '1' then '0' else '1'
+
+  render: ->
+    className = 'player-control small'
+    className +=
+      if @props.status is '1'
+        ' active'
+      else
+        ' inactive'
+
+    <components.Button className={className} onClick={@action}
+                       title={@props.title} glyphIcon={@getClass()} />
+
+components.PlaybackButton = React.createClass
+  mixins: [components.MPDCommandMixin, components.ButtonMixin]
+
+  render: ->
+    className = 'player-control'
+    className += ' small' if @props.small
+
+    <components.Button className={className} onClick={@action}
+                       title={@props.title} glyphIcon={@getClass()} />
 
 components.Controls = React.createClass
   getInitialState: ->
-    this.fetchAndSetState()
+    @fetchAndSetState()
     return {
       progress: {}
     }
 
   componentDidMount: ->
-    self = this
+    self = @
 
     # Increases progress while playing.
     setInterval ->
@@ -52,12 +110,18 @@ components.Controls = React.createClass
             duration: self.state.progress.duration
     , 1000
 
-    document.addEventListener 'mpd:changed:player', ->
-      self.fetchAndSetState()
+    document.addEventListener 'mpd:changed', (event) ->
+      if event.detail
+        {what} = event.detail
+      else
+        what = null
+
+      if what is 'player' or what is 'options'
+        self.fetchAndSetState()
     , false
 
   fetchAndSetState: ->
-    self = this
+    self = @
 
     if progressUpdater isnt null
       clearTimeout progressUpdater
@@ -85,32 +149,39 @@ components.Controls = React.createClass
   render: ->
     progress = 0
     playpause =
-      if this.state.state isnt 'play'
+      if @state.state isnt 'play'
         <components.PlaybackButton action='play'  icon='play'  />
       else
         <components.PlaybackButton action='pause' icon='pause' />
 
-    if this.state.progress and this.state.progress.duration
-      progress = 100 * this.state.progress.elapsed / this.state.progress.duration
+    if @state.progress and @state.progress.duration
+      progress = 100 * @state.progress.elapsed / @state.progress.duration
       progress = 100 if progress > 100
       progress = 0 unless progress >= 0
 
     <div>
-      <div className="controls-buttons">
+      <div className='controls-buttons'>
         <components.PlaybackButton action='previous' icon='fast-backward' />
         {playpause}
         <components.PlaybackButton action='stop'     icon='stop'          />
         <components.PlaybackButton action='next'     icon='fast-forward'  />
       </div>
+      <div className=''>
+        <components.StateButton action='repeat'  icon='repeat'   status={@state.repeat}  title='Repeat Playlist' />
+        <components.StateButton action='random'  icon='random'   status={@state.random}  title='Play Tracks In Random Order' />
+        <components.StateButton action='consume' icon='trash'    status={@state.consume} title='Consume Tracks After Playing' />
+        <components.StateButton action='single'  icon='asterisk' status={@state.single}  title='Play a Single Track' />
+        <components.UpdateButton icon='refresh' />
+      </div>
       <div className='playing-prog'>
         <div className='playing-prog-bar' style={{width: String(progress) + '%'}}
              role='progressbar'
              aria-valuemin='0'
-             aria-valuemax={this.state.progress.duration}
-             aria-valuenow={this.state.progress.elapsed}
+             aria-valuemax={@state.progress.duration}
+             aria-valuenow={@state.progress.elapsed}
              >
           <span className='sr-only'>
-            {formatTime(this.state.progress.elapsed)} / {formatTime(this.state.progress.duration)}
+            {formatTime(@state.progress.elapsed)} / {formatTime(@state.progress.duration)}
           </span>
         </div>
       </div>
@@ -118,11 +189,11 @@ components.Controls = React.createClass
 
 components.Player = React.createClass
   getInitialState: ->
-    this.fetchAndSetState()
+    @fetchAndSetState()
     return {}
 
   componentDidMount: ->
-    self = this
+    self = @
 
     document.addEventListener 'mpd:changed', (event) ->
       what =
@@ -136,15 +207,15 @@ components.Player = React.createClass
     , false
 
   fetchAndSetState: ->
-    self = this
+    self = @
     mpd 'currentsong', (err, currentsong) ->
       return console.error(err) if err
       self.replaceState parseMPDResponse(currentsong)
 
   render: ->
     <div className='controls-player'>
-      <a href='/now_playing' id='currentsong' data-pos={this.state.Pos}>
-        {this.state.Artist} - {this.state.Title}
+      <a href='/now_playing' id='currentsong' data-pos={@state.Pos}>
+        {@state.Artist} - {@state.Title}
       </a>
     </div>
 

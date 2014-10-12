@@ -395,26 +395,6 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                           "foldPrefix": "^",
                           "name": "LESS"
                         },
-                        "sourcePath": "/home/rj/webapps/mpc/app/assets/stylesheets/blocks/modal.less",
-                        "projectPath": "app/assets/stylesheets/blocks/modal.less",
-                        "targetPath": "app/assets/stylesheets/blocks/modal",
-                        "pageTitle": "app/assets/stylesheets/blocks/modal",
-                        "title": "modal"
-                      },
-                      "depth": 5,
-                      "outline": []
-                    }, {
-                      "type": "file",
-                      "data": {
-                        "language": {
-                          "nameMatchers": [".less"],
-                          "pygmentsLexer": "sass",
-                          "highlightJS": "scss",
-                          "singleLineComment": ["//"],
-                          "ignorePrefix": "}",
-                          "foldPrefix": "^",
-                          "name": "LESS"
-                        },
                         "sourcePath": "/home/rj/webapps/mpc/app/assets/stylesheets/blocks/navigation.less",
                         "projectPath": "app/assets/stylesheets/blocks/navigation.less",
                         "targetPath": "app/assets/stylesheets/blocks/navigation",

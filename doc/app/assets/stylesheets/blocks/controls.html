@@ -5,13 +5,11 @@
 }
 
 <span class="hljs-id">#currentsong</span> {
-  <span class="hljs-attribute">background</span><span class="hljs-value">: transparent;</span>
   <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#efefef</span>;</span>
   <span class="hljs-attribute">font-size</span><span class="hljs-value">: <span class="hljs-number">18</span>px;</span>
 }
 
 <span class="hljs-tag">a</span><span class="hljs-class">.player-control</span> {
-  <span class="hljs-attribute">background</span><span class="hljs-value">: transparent;</span>
   <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#ccc</span>;</span>
   <span class="hljs-attribute">cursor</span><span class="hljs-value">: pointer;</span>
 
@@ -23,8 +21,30 @@
 
   &amp;<span class="hljs-pseudo">:hover</span>,
   &amp;<span class="hljs-pseudo">:focus</span> {
-    <span class="hljs-attribute">background</span><span class="hljs-value">: transparent;</span>
     <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#fff</span>;</span>
+  }
+
+  &amp;<span class="hljs-class">.small</span> {
+    <span class="hljs-attribute">font-size</span><span class="hljs-value">: <span class="hljs-number">12</span>px;</span>
+    <span class="hljs-attribute">padding</span><span class="hljs-value">: <span class="hljs-number">2</span>px <span class="hljs-number">10</span>px;</span> <span class="hljs-comment">// Extra padding to compensate for the smaller size.</span>
+  }
+
+  &amp;<span class="hljs-class">.active</span> {
+    <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#3c3</span>;</span>
+
+    &amp;<span class="hljs-pseudo">:hover</span>,
+    &amp;<span class="hljs-pseudo">:focus</span> {
+      <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#3f3</span>;</span>
+    }
+  }
+
+  &amp;<span class="hljs-class">.inactive</span> {
+    <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#999</span>;</span>
+
+    &amp;<span class="hljs-pseudo">:hover</span>,
+    &amp;<span class="hljs-pseudo">:focus</span> {
+      <span class="hljs-attribute">color</span><span class="hljs-value">: <span class="hljs-hexcolor">#fff</span>;</span>
+    }
   }
 }
 
