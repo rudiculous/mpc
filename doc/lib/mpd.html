@@ -107,18 +107,22 @@ commandList.forEach <span class="hljs-function"><span class="hljs-params">(comma
 <li><p><strong>callback must be a Function.</strong></p>
 </li>
 </ul></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">exports</span>.<span class="hljs-function"><span class="hljs-title">push</span> = <span class="hljs-params">(command, args..., callback)</span> -&gt;</span>
+
   last = arguments.length - <span class="hljs-number">1</span>
 
   <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span>(callback) <span class="hljs-keyword">isnt</span> <span class="hljs-string">'function'</span>
+    <span class="hljs-built_in">console</span>.error <span class="hljs-string">'[MPD]'</span>, <span class="hljs-string">'push was called without a callback function.'</span>
     <span class="hljs-keyword">return</span> <span class="hljs-comment"># Not doing anything without a callback.</span>
 
   <span class="hljs-keyword">if</span> arguments.length &lt; <span class="hljs-number">2</span>
+    <span class="hljs-built_in">console</span>.error <span class="hljs-string">'[MPD]'</span>, <span class="hljs-string">'push was called with an invalid number of arguments.'</span>
     <span class="hljs-keyword">return</span> callback <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'Invalid number of arguments.'</span>)
 
   args = args.join(<span class="hljs-string">' '</span>).replace(<span class="hljs-string">'\n'</span>, <span class="hljs-string">''</span>)
   args = <span class="hljs-string">' '</span> + args <span class="hljs-keyword">unless</span> args <span class="hljs-keyword">is</span> <span class="hljs-string">''</span>
 
   <span class="hljs-keyword">unless</span> validCommands[command]
+    <span class="hljs-built_in">console</span>.error <span class="hljs-string">'[MPD]'</span>, <span class="hljs-string">'push was called with an invalid command.'</span>
     <span class="hljs-keyword">return</span> callback <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'Invalid command.'</span>)
 
   queue.push
@@ -144,6 +148,8 @@ still be idle. If so, pass <code>onlyIfSkipNoIdle</code> to not write a new
     <span class="hljs-keyword">if</span> queue.length
       shift <span class="hljs-literal">true</span>
     <span class="hljs-keyword">else</span> <span class="hljs-keyword">unless</span> !skipNoIdle &amp;&amp; onlyIfSkipNoIdle</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Nothing left to do, wait for more input.</p></div></div><div class="code"><div class="wrapper">      client.write <span class="hljs-string">'idle\n'</span>
+      ev.once <span class="hljs-string">'queue:updated'</span>, queueUpdatedHandler
+    <span class="hljs-keyword">else</span>
       ev.once <span class="hljs-string">'queue:updated'</span>, queueUpdatedHandler
 
   <span class="hljs-function"><span class="hljs-title">act</span> = -&gt;</span>

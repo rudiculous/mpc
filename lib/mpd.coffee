@@ -149,18 +149,22 @@ exports.close = exports.end = ->
 # @param {String...} args
 # @param {Function}  callback
 exports.push = (command, args..., callback) ->
+
   last = arguments.length - 1
 
   if typeof(callback) isnt 'function'
+    console.error '[MPD]', 'push was called without a callback function.'
     return # Not doing anything without a callback.
 
   if arguments.length < 2
+    console.error '[MPD]', 'push was called with an invalid number of arguments.'
     return callback new Error('Invalid number of arguments.')
 
   args = args.join(' ').replace('\n', '')
   args = ' ' + args unless args is ''
 
   unless validCommands[command]
+    console.error '[MPD]', 'push was called with an invalid command.'
     return callback new Error('Invalid command.')
 
   queue.push
@@ -198,6 +202,8 @@ shift = (skipNoIdle = false) ->
     else unless !skipNoIdle && onlyIfSkipNoIdle
       # Nothing left to do, wait for more input.
       client.write 'idle\n'
+      ev.once 'queue:updated', queueUpdatedHandler
+    else
       ev.once 'queue:updated', queueUpdatedHandler
 
   act = ->
