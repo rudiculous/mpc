@@ -6,6 +6,7 @@
 
 route(['/', '/now_playing'])    -> views.nowPlaying
 route('/file_browser')          -> views.fileBrowser
+route('/search')                -> views.search
 
 
 # vim: set ft=coffee:

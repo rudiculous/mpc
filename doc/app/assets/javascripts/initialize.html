@@ -32,6 +32,7 @@ Object.defineProperty app, <span class="hljs-string">'title'</span>,
   <span class="hljs-keyword">return</span>
 
 app.views = {}
+app.views.generics = {}
 
 app.blocks =
   <span class="hljs-attribute">navigation</span>: <span class="hljs-built_in">document</span>.getElementById <span class="hljs-string">'navigation'</span>
@@ -46,12 +47,67 @@ app.blocks =
 
   <span class="hljs-keyword">return</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>When navigation takes place, run the router.</p></div></div><div class="code"><div class="wrapper">router = <span class="hljs-built_in">window</span>.APP_LIB.router
 <span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'navigation:page'</span>, router(app.blocks.main), <span class="hljs-literal">false</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Catch navigation events.
-Loosely based on <a href="https://github.com/rails/turbolinks">turbolinks</a></p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-title">attachClickHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+Loosely based on <a href="https://github.com/rails/turbolinks">turbolinks</a></p></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-title">attachFormSubmitHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+  <span class="hljs-keyword">unless</span> event.defaultPrevented
+    <span class="hljs-built_in">document</span>.removeEventListener <span class="hljs-string">'submit'</span>, formSubmitHandler, <span class="hljs-literal">false</span>
+    <span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'submit'</span>, formSubmitHandler, <span class="hljs-literal">false</span>
+
+<span class="hljs-function"><span class="hljs-title">attachClickHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
   <span class="hljs-keyword">unless</span> event.defaultPrevented
     <span class="hljs-built_in">document</span>.removeEventListener <span class="hljs-string">'click'</span>, clickHandler, <span class="hljs-literal">false</span>
     <span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'click'</span>, clickHandler, <span class="hljs-literal">false</span>
 
-  <span class="hljs-keyword">return</span>
+<span class="hljs-function"><span class="hljs-title">formSubmitHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+  form = event.target
+  form = form.parentNode <span class="hljs-keyword">until</span> !form.parentNode <span class="hljs-keyword">or</span> form.nodeName <span class="hljs-keyword">is</span> <span class="hljs-string">'FORM'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Submitted element was not a form (this should be unlikely...).</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> form.nodeName <span class="hljs-keyword">is</span> <span class="hljs-string">'FORM'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>For now, only handle GET forms.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> form.method.toLowerCase() <span class="hljs-keyword">is</span> <span class="hljs-string">'get'</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>The form submits to a different origin. Ignore it.</p></div></div><div class="code"><div class="wrapper">  [protocol, host, rest...] = form.action.split <span class="hljs-regexp">/\/</span>+/
+  origin = protocol + <span class="hljs-string">'//'</span> + host
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> origin <span class="hljs-keyword">is</span> <span class="hljs-built_in">document</span>.location.origin
+
+  event.preventDefault()
+
+  serialized = <span class="hljs-string">''</span>
+  <span class="hljs-keyword">for</span> element <span class="hljs-keyword">in</span> form.elements
+    <span class="hljs-keyword">if</span> element.name
+      serialized += <span class="hljs-string">"&amp;<span class="hljs-subst">#{encodeURIComponent element.name}</span>"</span>
+      <span class="hljs-keyword">if</span> element.value
+        serialized += <span class="hljs-string">"=<span class="hljs-subst">#{encodeURIComponent element.value}</span>"</span>
+
+  serialized = serialized.substring(<span class="hljs-number">1</span>) <span class="hljs-keyword">if</span> serialized
+  state = history.state
+
+  href = form.action
+  pathname = rest.join <span class="hljs-string">'/'</span>
+  [hostname, port] = host.split <span class="hljs-string">':'</span>
+  [pathname, hash] = pathname.split <span class="hljs-string">'#'</span>
+  [pathname, search] = pathname.split <span class="hljs-string">'?'</span>
+
+  hash ?= <span class="hljs-string">''</span>
+  search ?= <span class="hljs-string">''</span>
+
+  <span class="hljs-keyword">if</span> serialized
+    search += <span class="hljs-string">'&amp;'</span> + serialized
+    href +=
+      <span class="hljs-keyword">if</span> href.match <span class="hljs-regexp">/[?&amp;]$/</span>
+        serialized
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> href.match <span class="hljs-regexp">/\?/</span>
+        <span class="hljs-string">"&amp;<span class="hljs-subst">#{serialized}</span>"</span>
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-string">"?<span class="hljs-subst">#{serialized}</span>"</span>
+
+  state.location =
+    <span class="hljs-attribute">hash</span>: hash
+    <span class="hljs-attribute">host</span>: host
+    <span class="hljs-attribute">hostname</span>: hostname
+    <span class="hljs-attribute">href</span>: href
+    <span class="hljs-attribute">origin</span>: origin
+    <span class="hljs-attribute">pathname</span>: pathname
+    <span class="hljs-attribute">port</span>: port
+    <span class="hljs-attribute">protocol</span>: protocol
+    <span class="hljs-attribute">search</span>: search
+
+  history.pushState(state, <span class="hljs-string">''</span>, href)
+  <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>))
+  <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'state:updated'</span>))
 
 <span class="hljs-function"><span class="hljs-title">clickHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> event.defaultPrevented <span class="hljs-keyword">or</span> <span class="hljs-comment"># event was cancelled</span>
@@ -81,8 +137,7 @@ Loosely based on <a href="https://github.com/rails/turbolinks">turbolinks</a></p
   <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'navigation:page'</span>))
   <span class="hljs-built_in">document</span>.dispatchEvent(<span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'state:updated'</span>))
 
-  <span class="hljs-keyword">return</span>
-
+<span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'submit'</span>, attachFormSubmitHandler, <span class="hljs-literal">true</span>
 <span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'click'</span>, attachClickHandler, <span class="hljs-literal">true</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Delay execution of function long enough to miss the popstate event
 that is fired by some browsers on the initial page load.</p>
 <p>TODO: Is this (still) necessary?</p></div></div><div class="code"><div class="wrapper">setTimeout<span class="hljs-function"> -&gt;</span>

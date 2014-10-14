@@ -43,6 +43,7 @@ app.mpd = (command, args..., callback) ->
   return
 
 app.views = {}
+app.views.generics = {}
 
 app.blocks =
   navigation: document.getElementById 'navigation'
@@ -69,12 +70,76 @@ document.addEventListener 'navigation:page', router(app.blocks.main), false
 # Catch navigation events.
 #
 # Loosely based on [turbolinks](https://github.com/rails/turbolinks)
+attachFormSubmitHandler = (event) ->
+  unless event.defaultPrevented
+    document.removeEventListener 'submit', formSubmitHandler, false
+    document.addEventListener 'submit', formSubmitHandler, false
+
 attachClickHandler = (event) ->
   unless event.defaultPrevented
     document.removeEventListener 'click', clickHandler, false
     document.addEventListener 'click', clickHandler, false
 
-  return
+formSubmitHandler = (event) ->
+  form = event.target
+  form = form.parentNode until !form.parentNode or form.nodeName is 'FORM'
+
+  # Submitted element was not a form (this should be unlikely...).
+  return unless form.nodeName is 'FORM'
+
+  # For now, only handle GET forms.
+  return unless form.method.toLowerCase() is 'get'
+
+  # The form submits to a different origin. Ignore it.
+  [protocol, host, rest...] = form.action.split /\/+/
+  origin = protocol + '//' + host
+  return unless origin is document.location.origin
+
+  event.preventDefault()
+
+  serialized = ''
+  for element in form.elements
+    if element.name
+      serialized += "&#{encodeURIComponent element.name}"
+      if element.value
+        serialized += "=#{encodeURIComponent element.value}"
+
+  serialized = serialized.substring(1) if serialized
+  state = history.state
+
+  href = form.action
+  pathname = rest.join '/'
+  [hostname, port] = host.split ':'
+  [pathname, hash] = pathname.split '#'
+  [pathname, search] = pathname.split '?'
+
+  hash ?= ''
+  search ?= ''
+
+  if serialized
+    search += '&' + serialized
+    href +=
+      if href.match /[?&]$/
+        serialized
+      else if href.match /\?/
+        "&#{serialized}"
+      else
+        "?#{serialized}"
+
+  state.location =
+    hash: hash
+    host: host
+    hostname: hostname
+    href: href
+    origin: origin
+    pathname: pathname
+    port: port
+    protocol: protocol
+    search: search
+
+  history.pushState(state, '', href)
+  document.dispatchEvent(new CustomEvent('navigation:page'))
+  document.dispatchEvent(new CustomEvent('state:updated'))
 
 clickHandler = (event) ->
   return if event.defaultPrevented or # event was cancelled
@@ -114,8 +179,7 @@ clickHandler = (event) ->
   document.dispatchEvent(new CustomEvent('navigation:page'))
   document.dispatchEvent(new CustomEvent('state:updated'))
 
-  return
-
+document.addEventListener 'submit', attachFormSubmitHandler, true
 document.addEventListener 'click', attachClickHandler, true
 
 # Delay execution of function long enough to miss the popstate event

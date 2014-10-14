@@ -4,34 +4,9 @@
 
 components = window.MPD_APP.views.fileBrowser = {}
 
-{formatTime, parseMPDResponse} = window.APP_LIB
+{parseMPDResponse} = window.APP_LIB
 {mpd, updateState} = window.MPD_APP
-
-components.Directory = React.createClass
-  contextMenu: (event) ->
-    event.preventDefault()
-
-  render: ->
-    {directory} = @props.entry
-    segments = directory.split '/'
-    lastSegment = segments[segments.length - 1]
-
-    <li onContextMenu={@contextMenu} className='list-group-item'>
-      <a href={"/file_browser?pathName=#{encodeURIComponent directory}"}>
-        {lastSegment}
-      </a>
-    </li>
-
-components.File = React.createClass
-  render: ->
-    {Artist, Album, Track, Title, Time} = @props.entry
-
-    <tr>
-      <td>{Artist} - {Album}</td>
-      <td style={{'text-align':'right'}}>{Track}</td>
-      <td>{Title}</td>
-      <td style={{'text-align':'right'}}>{formatTime(Time)}</td>
-    </tr>
+{Directory, File} = window.MPD_APP.views.generics.items
 
 components.FileBrowser = React.createClass
   getInitialState: ->
@@ -58,11 +33,11 @@ components.FileBrowser = React.createClass
 
       data.entries = parseMPDResponse playlistinfo,
         file: (entry) ->
-          file = <components.File entry={entry} key={count++} />
+          file = <File entry={entry} key={count++} />
           data.files.push file
           return file
         directory: (entry) ->
-          directory = <components.Directory entry={entry} key={count++} />
+          directory = <Directory entry={entry} key={count++} />
           data.directories.push directory
           return directory
 

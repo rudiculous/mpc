@@ -14,6 +14,8 @@
 
             "lib/*.coffee",
             "initialize.coffee",
+            "views/generics/*.jsx",
+            "views/generics/*.cjsx",
             "views/*.jsx",
             "views/*.cjsx",
             "bootstrap.coffee",
