@@ -25,8 +25,9 @@ app.io.on 'connection', (socket) ->
                 'unknown error'
           callback(err, res)
 
+      # console.log args
       app.mpd.push.apply null, args
-  
+
   socket.on 'disconnect', -> app.mpd.removeListener 'changed', changedHandler
 
   socket.emit 'socket:ready'
