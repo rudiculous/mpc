@@ -207,8 +207,10 @@ shift = (skipNoIdle = false) ->
       ev.once 'queue:updated', queueUpdatedHandler
 
   act = ->
-    client.write command + args + '\n', ->
+    # console.log '[MPD:client.write]', "#{command}#{args}"
+    client.write "#{command}#{args}\n", ->
       getData ->
+        # console.log '[MPD:client.receive]', arguments
         callback.apply @, arguments
         done()
 
@@ -236,16 +238,21 @@ shift = (skipNoIdle = false) ->
 # @param {Function} callback
 getData = (callback) ->
 
+  data = ''
+
   # Gets data from the data queue, or waits until something is
   # written.
   process = ->
     if dataQueue.length
-      data = dataQueue.shift()
+      data += dataQueue.shift()
 
       if data.match /^ACK/
+        # @todo What if an ACK message is longer than the output buffer?
         callback new Error(data)
-      else
+      else if data.match /OK[\r\n]+/
         callback null, data
+      else
+        process()
 
       return
 

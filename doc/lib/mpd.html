@@ -152,10 +152,8 @@ still be idle. If so, pass <code>onlyIfSkipNoIdle</code> to not write a new
     <span class="hljs-keyword">else</span>
       ev.once <span class="hljs-string">'queue:updated'</span>, queueUpdatedHandler
 
-  <span class="hljs-function"><span class="hljs-title">act</span> = -&gt;</span>
-    client.write command + args + <span class="hljs-string">'\n'</span>,<span class="hljs-function"> -&gt;</span>
-      getData<span class="hljs-function"> -&gt;</span>
-        callback.apply @, arguments
+  <span class="hljs-function"><span class="hljs-title">act</span> = -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>console.log &#39;[MPD:client.write]&#39;, &quot;#{command}#{args}&quot;</p></div></div><div class="code"><div class="wrapper">    client.write <span class="hljs-string">"<span class="hljs-subst">#{command}</span><span class="hljs-subst">#{args}</span>\n"</span>,<span class="hljs-function"> -&gt;</span>
+      getData<span class="hljs-function"> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>console.log &#39;[MPD:client.receive]&#39;, arguments</p></div></div><div class="code"><div class="wrapper">        callback.apply @, arguments
         done()
 
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> client <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
@@ -176,15 +174,18 @@ still be idle. If so, pass <code>onlyIfSkipNoIdle</code> to not write a new
 <p>Parameters:</p>
 <ul>
 <li><strong>callback must be a Function.</strong></li>
-</ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-title">getData</span> = <span class="hljs-params">(callback)</span> -&gt;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Gets data from the data queue, or waits until something is
+</ul></div></div><div class="code"><div class="wrapper"><span class="hljs-function"><span class="hljs-title">getData</span> = <span class="hljs-params">(callback)</span> -&gt;</span>
+
+  data = <span class="hljs-string">''</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Gets data from the data queue, or waits until something is
 written.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-title">process</span> = -&gt;</span>
     <span class="hljs-keyword">if</span> dataQueue.length
-      data = dataQueue.shift()
+      data += dataQueue.shift()
 
-      <span class="hljs-keyword">if</span> data.match <span class="hljs-regexp">/^ACK/</span>
-        callback <span class="hljs-keyword">new</span> Error(data)
-      <span class="hljs-keyword">else</span>
+      <span class="hljs-keyword">if</span> data.match <span class="hljs-regexp">/^ACK/</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>TODO: What if an ACK message is longer than the output buffer?</p></div></div><div class="code"><div class="wrapper">        callback <span class="hljs-keyword">new</span> Error(data)
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> data.match <span class="hljs-regexp">/OK[\r\n]+/</span>
         callback <span class="hljs-literal">null</span>, data
+      <span class="hljs-keyword">else</span>
+        process()
 
       <span class="hljs-keyword">return</span>
 
