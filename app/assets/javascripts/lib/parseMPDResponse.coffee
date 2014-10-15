@@ -15,16 +15,24 @@ window.APP_LIB ||= {}
 #   split at these keywords, and each segment will be passed through the
 #   respective `Function`.
 #
-# @param {String} data The response from MPD.
+# @param {String}            data           The response from MPD.
 # @param {null|Array|Object} [split=null]
-# @param {String} [sep=': '] Separates key-values.
+# @param {String}            [sep=': ']     Separates key-values.
+# @param {Number}            [pageNo]       Page number.
+# @param {Number}            [rpp]          Records per page.
 # @returns {Object|Array} Returns either the parsed data or an array of
 # parsed segments.
-window.APP_LIB.parseMPDResponse = (data, split = null, sep = ': ') ->
+window.APP_LIB.parseMPDResponse = (data, split = null, sep = ': ', pageNo = null, rpp = null) ->
   entries = []
   lines = data.split '\n'
   entry = null
   transform = unit
+  entryIndex = 0
+
+  if rpp?
+    pageNo ?= 0
+    start = pageNo * rpp
+    end = (pageNo + 1) * rpp
 
   if split is null
     entry = {}
@@ -42,7 +50,12 @@ window.APP_LIB.parseMPDResponse = (data, split = null, sep = ': ') ->
       value = line.substring index + sep.length
 
       if split isnt null and split[key]
-        entries.push( transform(entry) ) if entry isnt null
+        if entry isnt null
+          if !rpp? or start <= entryIndex < end
+            entries.push transform(entry)
+
+          entryIndex++
+
         transform = split[key]
         entry = {}
 
@@ -51,8 +64,16 @@ window.APP_LIB.parseMPDResponse = (data, split = null, sep = ': ') ->
   if split is null
     return entry
   else
-    entries.push( transform(entry) ) if entry isnt null
-    return entries
+    if entry isnt null
+      if !rpp? or start <= entryIndex < end
+        entries.push transform(entry)
+
+      entryIndex++
+
+    if rpp?
+      return [entries, entryIndex]
+    else
+      return entries
 
 
 unit = (x) -> x

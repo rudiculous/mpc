@@ -2,11 +2,17 @@
 
 "use strict"
 
+RPP = 50
+PAG_AT_START = 5
+PAG_AT_END = 5
+PAG_AROUND = 3
+
 components = window.MPD_APP.views.search = {}
 
 {parseMPDResponse} = window.APP_LIB
 {mpd, updateState} = window.MPD_APP
 {Directory, File} = window.MPD_APP.views.generics.items
+{Pagination} = window.MPD_APP.views.generics.pagination
 
 components.SearchResults = React.createClass
   getInitialState: ->
@@ -14,12 +20,13 @@ components.SearchResults = React.createClass
     return {
       loading: true
       entries: []
+      resultCount: 0
     }
 
   fetchAndSetState: ->
     search = @props.search
-    search.replace /[\n\r]/g, ' ' # Strip newlines.
-    search.replace /([\\"])/g, '\\$1' # Escape characters.
+    search = search.replace /[\n\r]/g, ' ' # Strip newlines.
+    search = search.replace /([\\"])/g, '\\$1' # Escape characters.
     search = '"' + search + '"'
 
     mpd 'search', 'any', search, (err, results) =>
@@ -32,13 +39,24 @@ components.SearchResults = React.createClass
       count = 0
       data = {}
 
-      data.entries = parseMPDResponse results,
+      [data.entries, data.resultCount] = parseMPDResponse results,
         file: (entry) ->
           <File entry={entry} key={count++} />
+      , null, @props.pageNo - 1, RPP
 
       @replaceState data
 
+  getPageNoUrl: (pageNo) ->
+    base = document.location.search.replace /([?&;]pageNo=[^&;]*)/, ''
+
+    if base
+      base + "&pageNo=#{pageNo}"
+    else
+      "?pageNo=#{pageNo}"
+
   render: ->
+    pagination = ''
+
     contents = (
       if @state.loading
         <div className='alert alert-info'>Loading&hellip;</div>
@@ -50,23 +68,37 @@ components.SearchResults = React.createClass
       else if not @state.entries.length
         <div className='alert alert-warning'><strong>No results found.</strong></div>
       else
-        <table className='playlist table table-striped table-condensed table-hover'>
-          <col style={{width: '400px'}} />
-          <col style={{width: '50px'}} />
-          <col />
-          <col style={{width: '70px'}} />
+        pagination = (
+          <Pagination
+            start={PAG_AT_START}
+            around={PAG_AROUND}
+            end={PAG_AT_END}
+            pageNo={@props.pageNo}
+            pageCount={@state.resultCount // RPP}
+            getHref={@getPageNoUrl} />
+        )
 
-          <thead>
-            <th>Artist - Album</th>
-            <th>Track</th>
-            <th>Title</th>
-            <th>Duration</th>
-          </thead>
+        <div>
+          {pagination}
+          <table className='playlist table table-striped table-condensed table-hover'>
+            <col style={{width: '400px'}} />
+            <col style={{width: '50px'}} />
+            <col />
+            <col style={{width: '70px'}} />
 
-          <tfoot />
+            <thead>
+              <th>Artist - Album</th>
+              <th>Track</th>
+              <th>Title</th>
+              <th>Duration</th>
+            </thead>
 
-          <tbody>{@state.entries}</tbody>
-        </table>
+            <tfoot />
+
+            <tbody>{@state.entries}</tbody>
+          </table>
+          {pagination}
+        </div>
     )
 
     <div className='search-results'>
@@ -75,7 +107,7 @@ components.SearchResults = React.createClass
     </div>
 
 components.mount = (where, req) ->
-  {search} = req.params
+  {search, pageNo} = req.params
 
   search =
     if Array.isArray(search) and search.length
@@ -83,12 +115,15 @@ components.mount = (where, req) ->
     else
       ''
 
+  pageNo ?= 1
+  pageNo = Number(pageNo)
+
   updateState
     activeTab: null
     title: "Search Results for '#{search}'"
 
   React.renderComponent(
-    <components.SearchResults search={search} />,
+    <components.SearchResults search={search} pageNo={pageNo} />,
     where
   )
 

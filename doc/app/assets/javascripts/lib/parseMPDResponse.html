@@ -20,12 +20,22 @@ respective <code>Function</code>.</li>
 </li>
 <li><p><strong>sep must be a String and has a default value of &#39;:.</strong><br/>(&#39;] Separates key-values.)</p>
 </li>
+<li><p><strong>pageNo is optional and must be a Number.</strong><br/>(Page number.)</p>
+</li>
+<li><p><strong>rpp is optional and must be a Number.</strong><br/>(Records per page.)</p>
+</li>
 </ul>
-<p><strong>Returns an Object or an Array</strong><br/>(Returns either the parsed data or an array of parsed segments.)</p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">window</span>.APP_LIB.<span class="hljs-function"><span class="hljs-title">parseMPDResponse</span> = <span class="hljs-params">(data, split = <span class="hljs-literal">null</span>, sep = <span class="hljs-string">': '</span>)</span> -&gt;</span>
+<p><strong>Returns an Object or an Array</strong><br/>(Returns either the parsed data or an array of parsed segments.)</p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">window</span>.APP_LIB.<span class="hljs-function"><span class="hljs-title">parseMPDResponse</span> = <span class="hljs-params">(data, split = <span class="hljs-literal">null</span>, sep = <span class="hljs-string">': '</span>, pageNo = <span class="hljs-literal">null</span>, rpp = <span class="hljs-literal">null</span>)</span> -&gt;</span>
   entries = []
   lines = data.split <span class="hljs-string">'\n'</span>
   entry = <span class="hljs-literal">null</span>
   transform = unit
+  entryIndex = <span class="hljs-number">0</span>
+
+  <span class="hljs-keyword">if</span> rpp?
+    pageNo ?= <span class="hljs-number">0</span>
+    start = pageNo * rpp
+    end = (pageNo + <span class="hljs-number">1</span>) * rpp
 
   <span class="hljs-keyword">if</span> split <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
     entry = {}
@@ -43,7 +53,12 @@ respective <code>Function</code>.</li>
       value = line.substring index + sep.length
 
       <span class="hljs-keyword">if</span> split <span class="hljs-keyword">isnt</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">and</span> split[key]
-        entries.push( transform(entry) ) <span class="hljs-keyword">if</span> entry <span class="hljs-keyword">isnt</span> <span class="hljs-literal">null</span>
+        <span class="hljs-keyword">if</span> entry <span class="hljs-keyword">isnt</span> <span class="hljs-literal">null</span>
+          <span class="hljs-keyword">if</span> !rpp? <span class="hljs-keyword">or</span> start &lt;= entryIndex &lt; end
+            entries.push transform(entry)
+
+          entryIndex++
+
         transform = split[key]
         entry = {}
 
@@ -52,8 +67,16 @@ respective <code>Function</code>.</li>
   <span class="hljs-keyword">if</span> split <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
     <span class="hljs-keyword">return</span> entry
   <span class="hljs-keyword">else</span>
-    entries.push( transform(entry) ) <span class="hljs-keyword">if</span> entry <span class="hljs-keyword">isnt</span> <span class="hljs-literal">null</span>
-    <span class="hljs-keyword">return</span> entries
+    <span class="hljs-keyword">if</span> entry <span class="hljs-keyword">isnt</span> <span class="hljs-literal">null</span>
+      <span class="hljs-keyword">if</span> !rpp? <span class="hljs-keyword">or</span> start &lt;= entryIndex &lt; end
+        entries.push transform(entry)
+
+      entryIndex++
+
+    <span class="hljs-keyword">if</span> rpp?
+      <span class="hljs-keyword">return</span> [entries, entryIndex]
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-keyword">return</span> entries
 
 
 <span class="hljs-function"><span class="hljs-title">unit</span> = <span class="hljs-params">(x)</span> -&gt;</span> x</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>vim: set ft=coffee:</p></div></div></div></div></body></html>
