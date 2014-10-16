@@ -21,7 +21,7 @@ components.SingleEntry = React.createClass
       else
         {display:'none'}
 
-    <tr className={@props.active ? 'now-playing' : ''} onClick={@clickHandler}>
+    <tr className={if @props.active then 'currently-playing' else ''} onClick={@clickHandler}>
       <td style={{'text-align':'center'}}><span className='glyphicon glyphicon-play' style={active} /></td>
       <td>{Artist} - {Album}</td>
       <td style={{'text-align':'right'}}>{Track}</td>
