@@ -6,6 +6,33 @@ components = window.MPD_APP.views.generics.items = {}
 
 {formatTime} = window.APP_LIB
 
+components.Playlist = React.createClass
+  render: ->
+    <table className='playlist table table-striped table-condensed table-hover'>
+      <col style={{width: '400px'}} />
+      <col style={{width: '50px'}} />
+      <col />
+      <col style={{width: '70px'}} />
+
+      <thead>
+        <tr>
+          <th>Artist - Album</th>
+          <th>Track</th>
+          <th>Title</th>
+          <th>Duration</th>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <th colSpan='3'>{@props.children.length} songs</th>
+          <th style={{'text-align': 'right'}}>{formatTime @props.totalTime}</th>
+        </tr>
+      </tfoot>
+
+      <tbody>{@props.children}</tbody>
+    </table>
+
 components.Directory = React.createClass
   contextMenu: (event) ->
     event.preventDefault()

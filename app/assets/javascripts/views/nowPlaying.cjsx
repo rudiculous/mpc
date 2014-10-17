@@ -66,11 +66,12 @@ components.NowPlaying = React.createClass
       return console.error(err) if err
 
       data = {}
+      data.totalTime = 0
 
       data.songs = parseMPDResponse playlistinfo,
         file: (entry) ->
           active = currentsong and currentsong.dataset and currentsong.dataset.pos is entry.Pos
-
+          data.totalTime += Number(entry.Time)
           <components.SingleEntry key={entry.Pos} song={entry} active={active} />
 
       @replaceState data
@@ -97,14 +98,21 @@ components.NowPlaying = React.createClass
         <col style={{width: '70px'}} />
 
         <thead>
-          <th>Playing</th>
-          <th>Artist - Album</th>
-          <th>Track</th>
-          <th>Title</th>
-          <th>Duration</th>
+          <tr>
+            <th>Playing</th>
+            <th>Artist - Album</th>
+            <th>Track</th>
+            <th>Title</th>
+            <th>Duration</th>
+          </tr>
         </thead>
 
-        <tfoot />
+        <tfoot>
+          <tr>
+            <th colSpan='4'>{@state.songs.length} songs</th>
+            <th style={{'text-align': 'right'}}>{formatTime @state.totalTime}</th>
+          </tr>
+        </tfoot>
 
         <tbody>{@state.songs}</tbody>
       </table>

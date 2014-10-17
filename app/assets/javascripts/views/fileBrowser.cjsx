@@ -4,9 +4,9 @@
 
 components = window.MPD_APP.views.fileBrowser = {}
 
-{parseMPDResponse, mpdSafe} = window.APP_LIB
+{formatTime, parseMPDResponse, mpdSafe} = window.APP_LIB
 {mpd, updateState} = window.MPD_APP
-{Directory, File} = window.MPD_APP.views.generics.items
+{Playlist, Directory, File} = window.MPD_APP.views.generics.items
 {Dropdown, Action, Divider} = window.MPD_APP.views.generics.navigation
 
 components.FileBrowser = React.createClass
@@ -31,11 +31,13 @@ components.FileBrowser = React.createClass
       data =
         directories: []
         files: []
+        totalTime: 0
 
       data.entries = parseMPDResponse playlistinfo,
         file: (entry) ->
           file = <File entry={entry} key={count++} />
           data.files.push file
+          data.totalTime += Number(entry.Time)
           return file
         directory: (entry) ->
           directory = <Directory entry={entry} key={count++} />
@@ -100,23 +102,9 @@ components.FileBrowser = React.createClass
 
         files = (
           if @state.files.length
-            <table className='playlist table table-striped table-condensed table-hover'>
-              <col style={{width: '400px'}} />
-              <col style={{width: '50px'}} />
-              <col />
-              <col style={{width: '70px'}} />
-
-              <thead>
-                <th>Artist - Album</th>
-                <th>Track</th>
-                <th>Title</th>
-                <th>Duration</th>
-              </thead>
-
-              <tfoot />
-
-              <tbody>{@state.files}</tbody>
-            </table>
+            <Playlist totalTime={@state.totalTime}>
+              {@state.files}
+            </Playlist>
           else
             <p>No filed found.</p>
         )

@@ -11,7 +11,7 @@ components = window.MPD_APP.views.search = {}
 
 {parseMPDResponse, mpdSafe} = window.APP_LIB
 {mpd, updateState} = window.MPD_APP
-{Directory, File} = window.MPD_APP.views.generics.items
+{Playlist, Directory, File} = window.MPD_APP.views.generics.items
 {Pagination} = window.MPD_APP.views.generics.pagination
 {Dropdown, Action, Divider} = window.MPD_APP.views.generics.navigation
 
@@ -36,9 +36,11 @@ components.SearchResults = React.createClass
 
       count = 0
       data = {}
+      data.totalTime = 0
 
       [data.entries, data.resultCount] = parseMPDResponse results,
         file: (entry) ->
+          data.totalTime += Number(entry.Time)
           <File entry={entry} key={count++} />
       , null, @props.pageNo - 1, RPP
 
@@ -53,8 +55,6 @@ components.SearchResults = React.createClass
       "?pageNo=#{pageNo}"
 
   render: ->
-    pagination = ''
-
     contents = (
       if @state.loading
         <div className='alert alert-info'>Loading&hellip;</div>
@@ -63,7 +63,7 @@ components.SearchResults = React.createClass
           <strong>An error occurred!</strong>
           <pre>{@state.error}</pre>
         </div>
-      else if not @state.entries.length
+      else if @state.resultCount < 1
         <div className='alert alert-warning'><strong>No results found.</strong></div>
       else
         pagination = (
@@ -72,31 +72,24 @@ components.SearchResults = React.createClass
             around={PAG_AROUND}
             end={PAG_AT_END}
             pageNo={@props.pageNo}
-            pageCount={@state.resultCount // RPP}
+            pageCount={(@state.resultCount - 1) // RPP}
             getHref={@getPageNoUrl} />
         )
 
         <div>
           {pagination}
-          <table className='playlist table table-striped table-condensed table-hover'>
-            <col style={{width: '400px'}} />
-            <col style={{width: '50px'}} />
-            <col />
-            <col style={{width: '70px'}} />
-
-            <thead>
-              <th>Artist - Album</th>
-              <th>Track</th>
-              <th>Title</th>
-              <th>Duration</th>
-            </thead>
-
-            <tfoot />
-
-            <tbody>{@state.entries}</tbody>
-          </table>
+          <Playlist totalTime={@state.totalTime}>
+            {@state.entries}
+          </Playlist>
           {pagination}
         </div>
+    )
+
+    h1Extra = (
+      if @state.resultCount > 0
+        <small>{@state.resultCount} results</small>
+      else
+        ''
     )
 
     <div className='search-results'>
@@ -104,7 +97,7 @@ components.SearchResults = React.createClass
         <Dropdown label='Actions'>
           <Action href='#'>Add to playlist...</Action>
         </Dropdown>
-        <h1>Search Results for <em>{@props.search}</em></h1>
+        <h1>Search Results for <em>{@props.search}</em> {h1Extra}</h1>
       </header>
       {contents}
     </div>
