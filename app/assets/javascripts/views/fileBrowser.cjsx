@@ -46,11 +46,19 @@ components.FileBrowser = React.createClass
 
       @replaceState data
 
-  addToNowPlaying: ->
-    return (event) =>
-      event.preventDefault()
+  componentDidMount: ->
+    key 'space', 'not-input', =>
       mpd 'add', mpdSafe(@props.pathName), (err) =>
         return console.error err if err
+      false
+
+  componentWillUnmount: ->
+    key.unbind 'space', 'not-input'
+
+  addToNowPlaying: (event) ->
+    event.preventDefault()
+    mpd 'add', mpdSafe(@props.pathName), (err) =>
+      return console.error err if err
 
   render: ->
     crumbs = []
@@ -120,7 +128,7 @@ components.FileBrowser = React.createClass
       <div className='music-file-browser'>
         <header className='clearfix'>
           <Dropdown label='Actions'>
-            <Action onClick={@addToNowPlaying()}>Add to <i>Now Playing</i></Action>
+            <Action onClick={@addToNowPlaying}>Add to <i>Now Playing</i></Action>
           </Dropdown>
           <h1>File Browser</h1>
         </header>
