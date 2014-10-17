@@ -44,8 +44,15 @@ app.blocks =
   <span class="hljs-built_in">document</span>.dispatchEvent <span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">"mpd:changed:<span class="hljs-subst">#{what}</span>"</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>When navigation takes place, run the router.</p></div></div><div class="code"><div class="wrapper">router = <span class="hljs-built_in">window</span>.APP_LIB.router
 <span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'navigation:page'</span>, router(app.blocks.main), <span class="hljs-literal">false</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Attach handlers for page navigation.</p></div></div><div class="code"><div class="wrapper">{attachFormSubmitHandler, attachClickHandler} = <span class="hljs-built_in">window</span>.APP_LIB.navigation
 <span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'submit'</span>, attachFormSubmitHandler, <span class="hljs-literal">true</span>
-<span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'click'</span>, attachClickHandler, <span class="hljs-literal">true</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Attach handlers for key events.</p></div></div><div class="code"><div class="wrapper">{attachKeyHandler} = <span class="hljs-built_in">window</span>.APP_LIB.keybindings
-<span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'keydown'</span>, attachKeyHandler, <span class="hljs-literal">true</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Delay execution of function long enough to miss the popstate event
+<span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'click'</span>, attachClickHandler, <span class="hljs-literal">true</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Set up keymaster.</p></div></div><div class="code"><div class="wrapper">key.<span class="hljs-function"><span class="hljs-title">filter</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+  tagName = (event.target || event.srcElement).tagName
+  key.setScope(
+    <span class="hljs-keyword">if</span> tagName <span class="hljs-keyword">is</span> <span class="hljs-string">'INPUT'</span> <span class="hljs-keyword">or</span> tagName <span class="hljs-keyword">is</span> <span class="hljs-string">'SELECT'</span> <span class="hljs-keyword">or</span> tagName <span class="hljs-keyword">is</span> <span class="hljs-string">'TEXTAREA'</span>
+      <span class="hljs-string">'input'</span>
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-string">'not-input'</span>
+  )
+  <span class="hljs-literal">true</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p>Delay execution of function long enough to miss the popstate event
 that is fired by some browsers on the initial page load.</p>
 <p>TODO: Is this (still) necessary?</p></div></div><div class="code"><div class="wrapper">setTimeout<span class="hljs-function"> -&gt;</span>
   <span class="hljs-built_in">window</span>.addEventListener <span class="hljs-string">'popstate'</span>, <span class="hljs-function"><span class="hljs-params">(event)</span> -&gt;</span>

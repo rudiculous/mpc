@@ -1,64 +1,60 @@
 "use strict"
 
-{registerKeyBinding} = window.APP_LIB.keybindings
 {goto} = window.APP_LIB.navigation
 {mpd} = window.MPD_APP
 
 
 stack = []
-stackTimer = null
-combiKeyBindTimeout = 400
+chainTimer = null
+CHAIN_TIMEOUT = 400
 
 
-# Navigation with g+... .
-registerKeyBinding 'g', (event) ->
-  if stack.length is 0
-    event.detail.parent.preventDefault()
-    stack.push 'g'
+# Navigation for g+... chains.
+key 'g', 'not-input', ->
+  return true if stack.length isnt 0
 
-    stackTimer = setTimeout ->
-      stack.length = 0
-      stackTimer = null
-    , combiKeyBindTimeout
-, false
+  stack.push 'g'
+  chainTimer = setTimeout ->
+    stack.length = 0
+    chainTimer = null
+  , CHAIN_TIMEOUT
+  false
 
+# Helper method for g+... chains.
+g = (path) ->
+  return true if stack.length isnt 1 or stack[0] isnt 'g'
 
-# Go to 'Now Playing'
-registerKeyBinding 'n', (event) ->
-  if stack.length is 1 and stack[0] is 'g'
-    event.detail.parent.preventDefault()
-    if stackTimer
-      clearTimeout stackTimer
-      stackTimer = null
-    goto '/now_playing'
-, false
+  if chainTimer?
+    clearTimeout chainTimer
+    chainTimer = null
+    stack.length = 0
+    goto path
 
+# g+n -> Now Playing
+key 'n', 'not-input', -> g('/now_playing')
 
-# Go to 'File Browser'
-registerKeyBinding 'f', (event) ->
-  if stack.length is 1 and stack[0] is 'g'
-    event.detail.parent.preventDefault()
-    if stackTimer
-      clearTimeout stackTimer
-      stackTimer = null
-    goto '/file_browser'
-, false
+# g+f -> File Browser
+key 'f', 'not-input', -> g('/file_browser')
 
 
-# Let the application handle soft refreshes.
-for key in ['f5', 'ctrl+r']
-  registerKeyBinding key, ->
-    document.dispatchEvent new CustomEvent('navigation:page')
+# Let the app handle soft refreshes.
+key 'f5, ctrl+r', ->
+  document.dispatchEvent new CustomEvent('navigation:page')
+  false
 
-
-# '/' focusses the search bar
-registerKeyBinding '/', ->
-  search = document.getElementById 'search'
-  if search
-    search.focus()
-
-
-# 'u' updates the database
-registerKeyBinding 'u', ->
+# 'u' updates the music database.
+key 'u', 'not-input', ->
   mpd 'update', (err, data) ->
     console.error(err) if err
+  false
+
+# '/' focusses the search input.
+key '/', 'not-input', ->
+  search = document.getElementById 'search'
+  search.focus() if search
+  false
+
+# 'escape' removes focus from input elements.
+key 'escape', 'input', (event) ->
+  event.target.blur()
+  false

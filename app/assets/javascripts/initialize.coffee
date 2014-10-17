@@ -69,9 +69,16 @@ document.addEventListener 'submit', attachFormSubmitHandler, true
 document.addEventListener 'click', attachClickHandler, true
 
 
-# Attach handlers for key events.
-{attachKeyHandler} = window.APP_LIB.keybindings
-document.addEventListener 'keydown', attachKeyHandler, true
+# Set up keymaster.
+key.filter = (event) ->
+  tagName = (event.target || event.srcElement).tagName
+  key.setScope(
+    if tagName is 'INPUT' or tagName is 'SELECT' or tagName is 'TEXTAREA'
+      'input'
+    else
+      'not-input'
+  )
+  true
 
 
 # Delay execution of function long enough to miss the popstate event
