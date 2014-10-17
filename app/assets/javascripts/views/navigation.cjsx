@@ -30,7 +30,7 @@ components.Menu = React.createClass
 
       <form className='navigation-menu nav nav-pills nav-stacked' role='search' action='/search' method='get'>
         <div className='input-group'>
-          <input type='text' className='form-control' name='search' placeholder='search' />
+          <input type='text' className='form-control' name='search' placeholder='search' id='search' />
           <span className='input-group-btn'>
             <button className='btn btn-default' type='submit'>
               <span className='glyphicon glyphicon-search' />

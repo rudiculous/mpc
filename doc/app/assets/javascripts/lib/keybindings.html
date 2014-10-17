@@ -4,17 +4,48 @@
 <span class="hljs-built_in">window</span>.APP_LIB ||= {}
 
 
-<span class="hljs-built_in">window</span>.APP_LIB.keyListener = <span class="hljs-function"><span class="hljs-title">keyListener</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+<span class="hljs-function"><span class="hljs-title">attachKeyHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+  <span class="hljs-keyword">unless</span> event.defaultPrevented
+    <span class="hljs-built_in">document</span>.removeEventListener <span class="hljs-string">'keydown'</span>, keyHandler, <span class="hljs-literal">false</span>
+    <span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">'keydown'</span>, keyHandler, <span class="hljs-literal">false</span>
+
+
+<span class="hljs-function"><span class="hljs-title">keyHandler</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> event.defaultPrevented
+
   input = event.target
 
   <span class="hljs-keyword">if</span> input.nodeName <span class="hljs-keyword">is</span> <span class="hljs-string">'INPUT'</span> <span class="hljs-keyword">or</span> input.nodeName <span class="hljs-keyword">is</span> <span class="hljs-string">'TEXTAREA'</span>
     <span class="hljs-keyword">return</span>
 
-  <span class="hljs-built_in">document</span>.dispatchEvent <span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'keylistener:key'</span>,
+  fullKeyName = event.key.toLowerCase()
+  fullKeyName = <span class="hljs-string">"shift+<span class="hljs-subst">#{fullKeyName}</span>"</span> <span class="hljs-keyword">if</span> event.shiftKey
+  fullKeyName = <span class="hljs-string">"meta+<span class="hljs-subst">#{fullKeyName}</span>"</span> <span class="hljs-keyword">if</span> event.metaKey
+  fullKeyName = <span class="hljs-string">"ctrl+<span class="hljs-subst">#{fullKeyName}</span>"</span> <span class="hljs-keyword">if</span> event.ctrlKey
+  fullKeyName = <span class="hljs-string">"alt+<span class="hljs-subst">#{fullKeyName}</span>"</span> <span class="hljs-keyword">if</span> event.altKey
+
+  eventDetail =
     <span class="hljs-attribute">detail</span>:
+      <span class="hljs-attribute">parent</span>: event
       <span class="hljs-attribute">altKey</span>: event.altKey
       <span class="hljs-attribute">ctrlKey</span>: event.ctrlKey
       <span class="hljs-attribute">metaKey</span>: event.metaKey
       <span class="hljs-attribute">shiftKey</span>: event.shiftKey
       <span class="hljs-attribute">key</span>: event.key
-  )</div></div></div></div></body></html>
+      <span class="hljs-attribute">fullKeyName</span>: fullKeyName
+
+  <span class="hljs-built_in">document</span>.dispatchEvent <span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'keylistener:key'</span>, eventDetail)
+  <span class="hljs-built_in">document</span>.dispatchEvent <span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">"keylistener:key:<span class="hljs-subst">#{fullKeyName}</span>"</span>, eventDetail)
+
+
+<span class="hljs-function"><span class="hljs-title">registerKeyBinding</span> = <span class="hljs-params">(key, callback, cancelDefault = <span class="hljs-literal">true</span>)</span> -&gt;</span>
+  <span class="hljs-built_in">document</span>.addEventListener <span class="hljs-string">"keylistener:key:<span class="hljs-subst">#{key}</span>"</span>, <span class="hljs-function"><span class="hljs-params">(event)</span> -&gt;</span>
+    event.detail.parent.preventDefault() <span class="hljs-keyword">if</span> cancelDefault
+    callback.apply <span class="hljs-keyword">this</span>, arguments
+  , <span class="hljs-literal">false</span>
+
+
+<span class="hljs-built_in">window</span>.APP_LIB.keybindings =
+  <span class="hljs-attribute">attachKeyHandler</span>: attachKeyHandler
+  <span class="hljs-attribute">keyHandler</span>: keyHandler
+  <span class="hljs-attribute">registerKeyBinding</span>: registerKeyBinding</div></div></div></div></body></html>

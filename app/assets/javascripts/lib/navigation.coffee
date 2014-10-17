@@ -18,6 +18,8 @@ attachClickHandler = (event) ->
     document.addEventListener 'click', clickHandler, false
 
 formSubmitHandler = (event) ->
+  return if event.defaultPrevented
+
   form = event.target
   form = form.parentNode until !form.parentNode or form.nodeName is 'FORM'
 
@@ -27,10 +29,10 @@ formSubmitHandler = (event) ->
   # For now, only handle GET forms.
   return unless form.method.toLowerCase() is 'get'
 
+  location = decomposePath form.action
+
   # The form submits to a different origin. Ignore it.
-  [protocol, host, rest...] = form.action.split /\/+/
-  origin = protocol + '//' + host
-  return unless origin is document.location.origin
+  return unless location.origin is document.location.origin
 
   event.preventDefault()
 
@@ -44,37 +46,19 @@ formSubmitHandler = (event) ->
   serialized = serialized.substring(1) if serialized
   state = history.state
 
-  href = form.action
-  pathname = rest.join '/'
-  [hostname, port] = host.split ':'
-  [pathname, hash] = pathname.split '#'
-  [pathname, search] = pathname.split '?'
-
-  hash ?= ''
-  search ?= ''
-
   if serialized
-    search += '&' + serialized
-    href +=
-      if href.match /[?&]$/
+    location.search += '&' + serialized
+    location.href +=
+      if location.href.match /[?&]$/
         serialized
-      else if href.match /\?/
+      else if location.href.match /\?/
         "&#{serialized}"
       else
         "?#{serialized}"
 
-  state.location =
-    hash: hash
-    host: host
-    hostname: hostname
-    href: href
-    origin: origin
-    pathname: pathname
-    port: port
-    protocol: protocol
-    search: search
+  state.location = location
 
-  history.pushState(state, '', href)
+  history.pushState(state, '', location.href)
   document.dispatchEvent new CustomEvent('navigation:page')
   document.dispatchEvent new CustomEvent('state:updated')
 
@@ -117,8 +101,71 @@ clickHandler = (event) ->
   document.dispatchEvent new CustomEvent('state:updated')
 
 
+decomposePath = (href) ->
+  if href.match /([a-z]+:)?\/\//
+    # absolute path
+    [protocol, host, rest...] = href.split /\/+/
+    origin = protocol + '//' + host
+    pathname = rest.join '/'
+    [hostname, port] = host.split ':'
+    [pathname, hash] = pathname.split '#'
+    [pathname, search] = pathname.split '?'
+
+    hash ?= ''
+    search ?= ''
+  else
+    # relative path
+    originalHref = href
+    {protocol, host, origin, hostname, port} = document.location
+
+    pathname = href
+
+    unless href.match /^\//
+      [rest..., dummy] = document.location.pathname.split '/'
+      rest.push href
+      pathname = rest.join '/'
+
+    unless pathname.match /^\//
+      pathname = "/#{pathname}"
+
+    [pathname, hash] = pathname.split '#'
+    [pathname, search] = pathname.split '?'
+
+    hash ?= ''
+    search ?= ''
+
+    href = "#{protocol}//#{host}#{pathname}"
+    href += "?#{search}" if originalHref.match /\?/
+    href += "\##{hash}" if originalHref.match /#/
+
+  return {
+    hash: hash
+    host: host
+    hostname: hostname
+    href: href
+    origin: origin
+    pathname: pathname
+    port: port
+    protocol: protocol
+    search: search
+  }
+
+
+goto = (href) ->
+  location = decomposePath href
+  document.location = href unless location.origin is document.location.origin
+  state = history.state
+  state.location = location
+
+  history.pushState(state, '', location.href)
+  document.dispatchEvent new CustomEvent('navigation:page')
+  document.dispatchEvent new CustomEvent('state:updated')
+
+
 window.APP_LIB.navigation =
   attachFormSubmitHandler: attachFormSubmitHandler
   attachClickHandler: attachClickHandler
   formSubmitHandler: formSubmitHandler
   clickHandler: clickHandler
+  decomposePath: decomposePath
+  goto: goto

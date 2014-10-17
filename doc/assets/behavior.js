@@ -160,6 +160,28 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                       "foldPrefix": "^",
                       "name": "CoffeeScript"
                     },
+                    "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/globalKeybindings.coffee",
+                    "projectPath": "app/assets/javascripts/globalKeybindings.coffee",
+                    "targetPath": "app/assets/javascripts/globalKeybindings",
+                    "pageTitle": "app/assets/javascripts/globalKeybindings",
+                    "title": "globalKeybindings"
+                  },
+                  "depth": 4,
+                  "outline": []
+                }, {
+                  "type": "file",
+                  "data": {
+                    "language": {
+                      "nameMatchers": [".coffee", "Cakefile"],
+                      "pygmentsLexer": "coffee-script",
+                      "highlightJS": "coffeescript",
+                      "multiLineComment": ["###*", " *", " ###", "###", "#", "###", "###*", "#", "###"],
+                      "strictMultiLineEnd": false,
+                      "singleLineComment": ["#"],
+                      "ignorePrefix": "}",
+                      "foldPrefix": "^",
+                      "name": "CoffeeScript"
+                    },
                     "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/initialize.coffee",
                     "projectPath": "app/assets/javascripts/initialize.coffee",
                     "targetPath": "app/assets/javascripts/initialize",

@@ -70,8 +70,8 @@ document.addEventListener 'click', attachClickHandler, true
 
 
 # Attach handlers for key events.
-{keyListener} = window.APP_LIB
-document.addEventListener 'keypress', keyListener, true
+{attachKeyHandler} = window.APP_LIB.keybindings
+document.addEventListener 'keydown', attachKeyHandler, true
 
 
 # Delay execution of function long enough to miss the popstate event
