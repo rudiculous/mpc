@@ -71,9 +71,6 @@ document.addEventListener 'click', attachClickHandler, true
 
 # Attach handlers for key events.
 {keyListener} = window.APP_LIB
-document.addEventListener 'keylistener:key', (event) ->
-  console.log event.detail
-, false
 document.addEventListener 'keypress', keyListener, true
 
 
