@@ -7,6 +7,7 @@ components = window.MPD_APP.views.fileBrowser = {}
 {parseMPDResponse} = window.APP_LIB
 {mpd, updateState} = window.MPD_APP
 {Directory, File} = window.MPD_APP.views.generics.items
+{Dropdown, Action, Divider} = window.MPD_APP.views.generics.navigation
 
 components.FileBrowser = React.createClass
   getInitialState: ->
@@ -123,7 +124,12 @@ components.FileBrowser = React.createClass
 
     return (
       <div className='music-file-browser'>
-        <h1>File Browser</h1>
+        <header className='clearfix'>
+          <Dropdown label='Actions'>
+            <Action href='#'>Add to playlist...</Action>
+          </Dropdown>
+          <h1>File Browser</h1>
+        </header>
         <ol className='breadcrumb'>{crumbs}</ol>
         {contents}
       </div>

@@ -13,6 +13,7 @@ components = window.MPD_APP.views.search = {}
 {mpd, updateState} = window.MPD_APP
 {Directory, File} = window.MPD_APP.views.generics.items
 {Pagination} = window.MPD_APP.views.generics.pagination
+{Dropdown, Action, Divider} = window.MPD_APP.views.generics.navigation
 
 components.SearchResults = React.createClass
   getInitialState: ->
@@ -102,7 +103,12 @@ components.SearchResults = React.createClass
     )
 
     <div className='search-results'>
-      <h1>Search Results for <em>{@props.search}</em></h1>
+      <header className='clearfix'>
+        <Dropdown label='Actions'>
+          <Action href='#'>Add to playlist...</Action>
+        </Dropdown>
+        <h1>Search Results for <em>{@props.search}</em></h1>
+      </header>
       {contents}
     </div>
 

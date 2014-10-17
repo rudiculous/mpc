@@ -5,6 +5,7 @@
 components = window.MPD_APP.views.nowPlaying = {}
 {updateState, mpd} = window.MPD_APP
 {formatTime, parseMPDResponse} = window.APP_LIB
+{Dropdown, Action, Divider} = window.MPD_APP.views.generics.navigation
 
 components.SingleEntry = React.createClass
   clickHandler: ->
@@ -76,7 +77,13 @@ components.NowPlaying = React.createClass
 
   render: ->
     <div className='now-playing'>
-      <h1>Now Playing</h1>
+      <header className='clearfix'>
+        <Dropdown label='Actions'>
+          <Action href='#'>Clear playlist</Action>
+        </Dropdown>
+        <h1>Now Playing</h1>
+      </header>
+
       <table className='playlist table table-striped table-condensed table-hover'>
         <col style={{width: '65px'}} />
         <col style={{width: '400px'}} />
