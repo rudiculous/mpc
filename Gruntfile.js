@@ -18,7 +18,7 @@ module.exports = function(grunt) {
         'manifest': require('./app/assets/manifest'),
         'root': __dirname,
         'assetsDir': pathM.join(__dirname, 'static/assets'),
-        'staticBase': productionConfig.locals.staticBase,
+        'staticBase': productionConfig.locals.staticBase + '/assets',
     });
 
     grunt.registerTask('default', ['assets', 'groc']);
