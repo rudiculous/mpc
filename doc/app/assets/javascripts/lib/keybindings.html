@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="en"><head><title>app/assets/javascripts/lib/keybindings</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../../"><meta name="groc-document-path" content="app/assets/javascripts/lib/keybindings"><meta name="groc-project-path" content="app/assets/javascripts/lib/keybindings.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../../../assets/style.css"><script type="text/javascript" src="../../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">app/assets/javascripts/lib/keybindings.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-string">"use strict"</span>
+
+
+<span class="hljs-built_in">window</span>.APP_LIB ||= {}
+
+
+<span class="hljs-built_in">window</span>.APP_LIB.keyListener = <span class="hljs-function"><span class="hljs-title">keyListener</span> = <span class="hljs-params">(event)</span> -&gt;</span>
+  input = event.target
+
+  <span class="hljs-keyword">if</span> input.nodeName <span class="hljs-keyword">is</span> <span class="hljs-string">'INPUT'</span> <span class="hljs-keyword">or</span> input.nodeName <span class="hljs-keyword">is</span> <span class="hljs-string">'TEXTAREA'</span>
+    <span class="hljs-keyword">return</span>
+
+  <span class="hljs-built_in">document</span>.dispatchEvent <span class="hljs-keyword">new</span> CustomEvent(<span class="hljs-string">'keylistener:key'</span>,
+    <span class="hljs-attribute">detail</span>:
+      <span class="hljs-attribute">altKey</span>: event.altKey
+      <span class="hljs-attribute">ctrlKey</span>: event.ctrlKey
+      <span class="hljs-attribute">metaKey</span>: event.metaKey
+      <span class="hljs-attribute">shiftKey</span>: event.shiftKey
+      <span class="hljs-attribute">key</span>: event.key
+  )</div></div></div></div></body></html>
