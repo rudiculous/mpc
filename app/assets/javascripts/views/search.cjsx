@@ -9,7 +9,7 @@ PAG_AROUND = 3
 
 components = window.MPD_APP.views.search = {}
 
-{parseMPDResponse} = window.APP_LIB
+{parseMPDResponse, mpdSafe} = window.APP_LIB
 {mpd, updateState} = window.MPD_APP
 {Directory, File} = window.MPD_APP.views.generics.items
 {Pagination} = window.MPD_APP.views.generics.pagination
@@ -25,10 +25,7 @@ components.SearchResults = React.createClass
     }
 
   fetchAndSetState: ->
-    search = @props.search
-    search = search.replace /[\n\r]/g, ' ' # Strip newlines.
-    search = search.replace /([\\"])/g, '\\$1' # Escape characters.
-    search = '"' + search + '"'
+    search = mpdSafe @props.search
 
     mpd 'search', 'any', search, (err, results) =>
       if err

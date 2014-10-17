@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="en"><head><title>app/assets/javascripts/lib/mpdHelpers</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../../"><meta name="groc-document-path" content="app/assets/javascripts/lib/mpdHelpers"><meta name="groc-project-path" content="app/assets/javascripts/lib/mpdHelpers.coffee"><link rel="stylesheet" type="text/css" media="all" href="../../../../assets/style.css"><script type="text/javascript" src="../../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">app/assets/javascripts/lib/mpdHelpers.coffee</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="hljs-string">"use strict"</span>
+
+
+<span class="hljs-built_in">window</span>.APP_LIB ||= {}</div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><h3 id="makes-an-argument-safe-to-use-for-mpd">Makes an argument safe to use for MPD.</h3>
+<p>Parameters:</p>
+<ul>
+<li><strong>arg must be a String.</strong></li>
+</ul>
+<p><strong>Returns a String</strong></p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">window</span>.APP_LIB.<span class="hljs-function"><span class="hljs-title">mpdSafe</span> = <span class="hljs-params">(arg)</span> -&gt;</span>
+  arg = arg.replace <span class="hljs-regexp">/[\n\r]/g</span>, <span class="hljs-string">' '</span> <span class="hljs-comment"># Strip newlines.</span>
+  arg = arg.replace <span class="hljs-regexp">/([\\"])/g</span>, <span class="hljs-string">'\\$1'</span> <span class="hljs-comment"># Escape characters.</span>
+  arg = <span class="hljs-string">'"'</span> + arg + <span class="hljs-string">'"'</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><h3 id="parses-responses-from-mpd">Parses responses from MPD.</h3>
+<p>The parameter <code>split</code> should be an object describing if and how to
+split the response from MPD into an array. This value should be:</p>
+<ul>
+<li><code>null</code>. In this case the response won&#39;t be split.</li>
+<li>An <code>Array</code> of keywords. In this case the response will be split at
+these keywords.</li>
+<li>An <code>Object</code> mapping keywords to <code>Function</code>s. The response will be
+split at these keywords, and each segment will be passed through the
+respective <code>Function</code>.</li>
+</ul>
+<p>Parameters:</p>
+<ul>
+<li><p><strong>data must be a String.</strong><br/>(The response from MPD.)</p>
+</li>
+<li><p><strong>split is optional, can be a null, an Array, or an Object, and has a default value of null.</strong></p>
+</li>
+<li><p><strong>sep must be a String and has a default value of &#39;:.</strong><br/>(&#39;] Separates key-values.)</p>
+</li>
+<li><p><strong>pageNo is optional and must be a Number.</strong><br/>(Page number.)</p>
+</li>
+<li><p><strong>rpp is optional and must be a Number.</strong><br/>(Records per page.)</p>
+</li>
+</ul>
+<p><strong>Returns an Object or an Array</strong><br/>(Returns either the parsed data or an array of parsed segments.)</p></div></div><div class="code"><div class="wrapper"><span class="hljs-built_in">window</span>.APP_LIB.<span class="hljs-function"><span class="hljs-title">parseMPDResponse</span> = <span class="hljs-params">(data, split = <span class="hljs-literal">null</span>, sep = <span class="hljs-string">': '</span>, pageNo = <span class="hljs-literal">null</span>, rpp = <span class="hljs-literal">null</span>)</span> -&gt;</span>
+  entries = []
+  lines = data.split <span class="hljs-string">'\n'</span>
+  entry = <span class="hljs-literal">null</span>
+  transform = unit
+  entryIndex = <span class="hljs-number">0</span>
+
+  <span class="hljs-keyword">if</span> rpp?
+    pageNo ?= <span class="hljs-number">0</span>
+    start = pageNo * rpp
+    end = (pageNo + <span class="hljs-number">1</span>) * rpp
+
+  <span class="hljs-keyword">if</span> split <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
+    entry = {}
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> Array.isArray split
+    ns = {}
+    <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> split
+      ns[item] = unit
+    split = ns
+
+  <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> lines
+    index = line.indexOf sep
+
+    <span class="hljs-keyword">if</span> index &gt; -<span class="hljs-number">1</span>
+      key = line.substring <span class="hljs-number">0</span>, index
+      value = line.substring index + sep.length
+
+      <span class="hljs-keyword">if</span> split <span class="hljs-keyword">isnt</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">and</span> split[key]
+        <span class="hljs-keyword">if</span> entry <span class="hljs-keyword">isnt</span> <span class="hljs-literal">null</span>
+          <span class="hljs-keyword">if</span> !rpp? <span class="hljs-keyword">or</span> start &lt;= entryIndex &lt; end
+            entries.push transform(entry)
+
+          entryIndex++
+
+        transform = split[key]
+        entry = {}
+
+      entry[key] = value
+
+  <span class="hljs-keyword">if</span> split <span class="hljs-keyword">is</span> <span class="hljs-literal">null</span>
+    <span class="hljs-keyword">return</span> entry
+  <span class="hljs-keyword">else</span>
+    <span class="hljs-keyword">if</span> entry <span class="hljs-keyword">isnt</span> <span class="hljs-literal">null</span>
+      <span class="hljs-keyword">if</span> !rpp? <span class="hljs-keyword">or</span> start &lt;= entryIndex &lt; end
+        entries.push transform(entry)
+
+      entryIndex++
+
+    <span class="hljs-keyword">if</span> rpp?
+      <span class="hljs-keyword">return</span> [entries, entryIndex]
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-keyword">return</span> entries
+
+
+<span class="hljs-function"><span class="hljs-title">unit</span> = <span class="hljs-params">(x)</span> -&gt;</span> x</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>vim: set ft=coffee:</p></div></div></div></div></body></html>

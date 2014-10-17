@@ -222,15 +222,23 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                           "foldPrefix": "^",
                           "name": "CoffeeScript"
                         },
-                        "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/lib/parseMPDResponse.coffee",
-                        "projectPath": "app/assets/javascripts/lib/parseMPDResponse.coffee",
-                        "targetPath": "app/assets/javascripts/lib/parseMPDResponse",
-                        "pageTitle": "app/assets/javascripts/lib/parseMPDResponse",
-                        "title": "parseMPDResponse"
+                        "sourcePath": "/home/rj/webapps/mpc/app/assets/javascripts/lib/mpdHelpers.coffee",
+                        "projectPath": "app/assets/javascripts/lib/mpdHelpers.coffee",
+                        "targetPath": "app/assets/javascripts/lib/mpdHelpers",
+                        "pageTitle": "app/assets/javascripts/lib/mpdHelpers",
+                        "title": "mpdHelpers"
                       },
                       "depth": 5,
                       "outline": [
                         {
+                          "type": "heading",
+                          "data": {
+                            "level": 3,
+                            "title": "Makes an argument safe to use for MPD.",
+                            "slug": "makes-an-argument-safe-to-use-for-mpd"
+                          },
+                          "depth": 3
+                        }, {
                           "type": "heading",
                           "data": {
                             "level": 3,

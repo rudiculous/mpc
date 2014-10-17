@@ -4,6 +4,16 @@
 window.APP_LIB ||= {}
 
 
+# ### Makes an argument safe to use for MPD.
+#
+# @param {String} arg
+# @returns {String}
+window.APP_LIB.mpdSafe = (arg) ->
+  arg = arg.replace /[\n\r]/g, ' ' # Strip newlines.
+  arg = arg.replace /([\\"])/g, '\\$1' # Escape characters.
+  arg = '"' + arg + '"'
+
+
 # ### Parses responses from MPD.
 #
 # The parameter `split` should be an object describing if and how to

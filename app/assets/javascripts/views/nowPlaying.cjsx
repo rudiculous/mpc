@@ -75,11 +75,16 @@ components.NowPlaying = React.createClass
 
       @replaceState data
 
+  clear: (event) ->
+    event.preventDefault()
+    mpd 'clear', (err, playlistinfo) =>
+      return console.error(err) if err
+
   render: ->
     <div className='now-playing'>
       <header className='clearfix'>
         <Dropdown label='Actions'>
-          <Action href='#'>Clear playlist</Action>
+          <Action onClick={@clear}>Clear playlist</Action>
         </Dropdown>
         <h1>Now Playing</h1>
       </header>

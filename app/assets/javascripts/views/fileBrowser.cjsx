@@ -4,7 +4,7 @@
 
 components = window.MPD_APP.views.fileBrowser = {}
 
-{parseMPDResponse} = window.APP_LIB
+{parseMPDResponse, mpdSafe} = window.APP_LIB
 {mpd, updateState} = window.MPD_APP
 {Directory, File} = window.MPD_APP.views.generics.items
 {Dropdown, Action, Divider} = window.MPD_APP.views.generics.navigation
@@ -20,7 +20,7 @@ components.FileBrowser = React.createClass
     }
 
   fetchAndSetState: ->
-    mpd 'lsinfo', @props.pathName, (err, playlistinfo) =>
+    mpd 'lsinfo', mpdSafe(@props.pathName), (err, playlistinfo) =>
       if err
         @setState
           loading: false
@@ -43,6 +43,12 @@ components.FileBrowser = React.createClass
           return directory
 
       @replaceState data
+
+  addToNowPlaying: ->
+    return (event) =>
+      event.preventDefault()
+      mpd 'add', mpdSafe(@props.pathName), (err) =>
+        return console.error err if err
 
   render: ->
     crumbs = []
@@ -126,7 +132,7 @@ components.FileBrowser = React.createClass
       <div className='music-file-browser'>
         <header className='clearfix'>
           <Dropdown label='Actions'>
-            <Action href='#'>Add to playlist...</Action>
+            <Action onClick={@addToNowPlaying()}>Add to <i>Now Playing</i></Action>
           </Dropdown>
           <h1>File Browser</h1>
         </header>
