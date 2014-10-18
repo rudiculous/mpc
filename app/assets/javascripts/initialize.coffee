@@ -69,18 +69,6 @@ document.addEventListener 'submit', attachFormSubmitHandler, true
 document.addEventListener 'click', attachClickHandler, true
 
 
-# Set up keymaster.
-key.filter = (event) ->
-  tagName = (event.target || event.srcElement).tagName
-  key.setScope(
-    if tagName is 'INPUT' or tagName is 'SELECT' or tagName is 'TEXTAREA'
-      'input'
-    else
-      'not-input'
-  )
-  true
-
-
 # Delay execution of function long enough to miss the popstate event
 # that is fired by some browsers on the initial page load.
 #

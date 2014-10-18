@@ -46,15 +46,6 @@ components.FileBrowser = React.createClass
 
       @replaceState data
 
-  componentDidMount: ->
-    key 'space', 'not-input', =>
-      mpd 'add', mpdSafe(@props.pathName), (err) =>
-        return console.error err if err
-      false
-
-  componentWillUnmount: ->
-    key.unbind 'space', 'not-input'
-
   addToNowPlaying: (event) ->
     event.preventDefault()
     mpd 'add', mpdSafe(@props.pathName), (err) =>
